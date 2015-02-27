@@ -398,6 +398,7 @@ function! s:unite_my_settings()"{{{
 endfunction"}}}
 
 let g:unite_source_file_mru_limit = 2048
+let g:unite_source_file_mru_filename_format = ''
 
 "------
 iab howu       home

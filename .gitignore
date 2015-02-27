@@ -1,3 +1,4 @@
 vimtags_filetypes/
 vim_sessions/
 vim_viminfos/
+*.swp

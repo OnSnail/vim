@@ -1,0 +1,521 @@
+" ============== START for pathogen ======
+execute pathogen#infect()
+syntax on
+syntax enable
+filetype plugin indent on
+" ============== End for pathogen ======
+
+"
+"=========My Configuration=========================
+"===================================================================================
+"===read 'Seven habits of effective text editing' http://www.moolenaar.net/habits.html===
+"===make youself simliar the utils of linux===sort,cut, tr, paste, find, grep, gawk, sed
+"==!使用的三种方式
+"1. r !ls ./  ,  !google-chrome %  ,  !gedit % :作为shell执行,与vim指令配合
+"2. '<,'>!sort -n ,%!sort -n  :以当前为输入，以sort的结果作为输出
+"3. '<,'>w !sort >1.result, 加w以当前部分作为输入，结果不作为输出
+"vimshell vimgbd http://clewn.sourceforge.net/ http://www.wana.at/vimshell/
+"runtime! debian.vim
+
+"设置leader
+let mapleader=","
+
+set nu
+"set tags=tags;
+set autochdir
+
+if version < 700
+  echo "~/.vimrc: Vim 7.0+ is required!, you should upgrade your vim to latest version."
+  finish
+endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" common settings section
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set nocompatible
+filetype plugin on
+filetype plugin indent on
+
+" 取消所有代码折叠
+set nofoldenable
+
+"@note:solarized see the commit under ranbo about colorscheme and terminal
+"== start scheme solarized
+set t_Co=256
+set background=dark
+let g:solarized_termcolors=256
+colorscheme solarized
+"== end scheme solarized
+
+" input settings
+set backspace=2
+set tabstop=2
+set shiftwidth=2
+set smarttab
+" set softtabstop=4
+set expandtab " expand tab to spaces
+
+" indent settiongs
+set autoindent
+set smartindent
+set cindent
+set cinoptions=:0,g0,t0,(0,Ws,m1
+
+" search settings
+set hlsearch
+set incsearch
+set smartcase
+set ignorecase " Do case insensitive matching 添加\c可忽略大小写
+
+" quickfix settings
+compiler gcc
+
+"let g:NeoComplCache_EnableAtStartup = 1
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Display settings section
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set ruler
+set showmatch
+set showmode
+set wildmenu
+set wildmode=longest:full,full
+
+" status line
+set statusline=%<%f\ %h%m%r%=%k[%{(&fenc==\"\")?&enc:&fenc}%{(&bomb?\",BOM\":\"\")}]\ %-14.(%l,%c%V%)\ %P
+
+" auto encoding detecting
+set encoding=utf-8
+set fileencodings=utf-8,gbk,cp936,big5,gb18030,ucs,ucs-bom,utf-8-bom
+"set fileencoding=utf-8
+let g:fencview_autodetect = 1
+
+" set term encoding according to system locale
+let &termencoding = substitute($LANG, "[a-zA-Z_-]*\.", "", "")
+
+" support gnu syntaxt
+let c_gnu = 1
+
+" show error for mixed tab-space
+let c_space_errors = 1
+"let c_no_tab_space_error = 1
+
+" don't show gcc statement expression ({x, y;}) as error
+let c_no_curly_error = 1
+
+" hilight characters over 101 columns
+"match DiffAdd '\%>80v.*'
+set textwidth=80
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+au BufWinEnter * let w:m2=matchadd('OverLength', '\%>' . &textwidth . 'v.\+', -1)
+nnoremap <Leader>hon :highlight OverLength NONE<CR>
+nnoremap <Leader>hoo :highlight OverLength ctermbg=red ctermfg=white guibg=#592929<CR>
+
+" hilight extra spaces at end of line
+match Error '\s\+$'
+
+let g:load_doxygen_syntax=1
+
+" fix vim quick fix
+set errorformat^=%-GIn\ file\ included\ %.%#
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Key mappings section
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+nnoremap <Leader>sp :set paste<CR>
+nnoremap <Leader>snp :set nopaste<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" auto commands section
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" remove trailing spaces
+function! RemoveTrailingSpace()
+  if $VIM_HATE_SPACE_ERRORS != '0'
+    normal m`
+    silent! :%s/\s\+$//e
+    normal ``
+  endif
+endfunction
+
+" apply gnu indent rule for system headers
+function! GnuIndent()
+  setlocal cinoptions=>4,n-2,{2,^-2,:2,=2,g0,h2,p5,t0,+2,(0,u0,w1,m1
+  setlocal shiftwidth=2
+  setlocal tabstop=8
+endfunction
+
+" fix inconsist line ending
+function! FixInconsistFileFormat()
+  if &fileformat == 'unix'
+    silent! :%s/\r$//e
+  endif
+endfunction
+autocmd BufWritePre * nested call FixInconsistFileFormat()
+
+" custom indent: no namespace indent, fix template indent errors
+function! CppNoNamespaceAndTemplateIndent()
+  let l:cline_num = line('.')
+  let l:cline = getline(l:cline_num)
+  let l:pline_num = prevnonblank(l:cline_num - 1)
+  let l:pline = getline(l:pline_num)
+  while l:pline =~# '\(^\s*{\s*\|^\s*//\|^\s*/\*\|\*/\s*$\)'
+    let l:pline_num = prevnonblank(l:pline_num - 1)
+    let l:pline = getline(l:pline_num)
+  endwhile
+  let l:retv = cindent('.')
+  let l:pindent = indent(l:pline_num)
+  if l:pline =~# '^\s*template\s*<\s*$'
+    let l:retv = l:pindent + &shiftwidth
+  elseif l:pline =~# '^\s*template\s*<.*>\s*$'
+    let l:retv = l:pindent
+  elseif l:pline =~# '\s*typename\s*.*,\s*$'
+    let l:retv = l:pindent
+  elseif l:pline =~# '\s*typename\s*.*>\s*$'
+    let l:retv = l:pindent - &shiftwidth
+  elseif l:cline =~# '^\s*>\s*$'
+    let l:retv = l:pindent - &shiftwidth
+  elseif l:pline =~# '^\s\+: \S.*' " C++ initialize list
+    let l:retv = l:pindent + 2
+  elseif l:pline =~# '^\s*namespace.*'
+    let l:retv = 0
+  endif
+  return l:retv
+endfunction
+autocmd FileType cpp nested setlocal indentexpr=CppNoNamespaceAndTemplateIndent()
+
+augroup filetype
+  autocmd! BufRead,BufNewFile *.proto set filetype=proto
+  autocmd! BufRead,BufNewFile *.thrift set filetype=thrift
+  autocmd! BufRead,BufNewFile *.pump set filetype=pump
+  " autocmd! BufRead,BufNewFile BUILD set filetype=blade
+augroup end
+
+" When editing a file, always jump to the last cursor position
+autocmd BufReadPost * nested
+      \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+      \ exe "normal g'\"" |
+      \ endif
+
+autocmd BufEnter /usr/include/c++/* nested setfiletype cpp
+autocmd BufEnter /usr/include/* nested call GnuIndent()
+autocmd BufWritePre * nested call RemoveTrailingSpace()
+autocmd FileType make nested colorscheme murphy |
+
+function SetLogHighLight()
+  highlight LogFatal ctermbg=red guifg=red
+  highlight LogError ctermfg=red guifg=red
+  highlight LogWarning ctermfg=yellow guifg=yellow
+  highlight LogInfo ctermfg=green guifg=green
+  syntax match LogFatal "^F\d\+ .*$"
+  syntax match LogError "^E\d\+ .*$"
+  syntax match LogWarning "^W\d\+ .*$"
+  " syntax match LogInfo "^I\d\+ .*$"
+endfunction
+autocmd BufEnter *.{log,INFO,WARNING,ERROR,FATAL} nested call SetLogHighLight()
+
+" auto insert gtest header inclusion for test source file
+autocmd BufNewFile *_test.{cpp,cxx,cc} nested :normal i#include "thirdparty/gtest/gtest.h"
+
+" auto insert gtest header inclusion for test source file
+function! s:InsertHeaderGuard()
+  let fullname = expand("%:p")
+  let rootdir = FindProjectRootDir()
+  if rootdir != ""
+    let path = substitute(fullname, "^" . rootdir . "/", "", "")
+  else
+    let path = expand("%")
+  endif
+  let varname = toupper(substitute(path, "[^a-zA-Z0-9]", "_", "g")) . "_"
+  exec 'norm O#ifndef ' . varname
+  exec 'norm o#define ' . varname
+  "   exec 'norm o#pragma once'
+  exec '$norm o#endif // ' . varname
+endfunction
+autocmd BufNewFile *.{h,hh.hxx,hpp} nested call <SID>InsertHeaderGuard()
+
+autocmd QuickFixCmdPost * :QFix
+
+autocmd FileType python syn keyword Function self
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Custom commands sections
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"======xmllint======
+"au 导致会删除
+function! DoPrettyXML()
+  " save the filetype so we can restore it later
+  let l:origft = &ft
+  set ft=
+  " delete the xml header if it exists. This will
+  " permit us to surround the document with fake tags
+  " without creating invalid xml.
+  1s/<?xml .*?>//e
+  " insert fake tags around the entire document.
+  " This will permit us to pretty-format excerpts of
+  " XML that may contain multiple top-level elements.
+  0put ='<PrettyXML>'
+  $put ='</PrettyXML>'
+  silent %!xmllint --format -
+  " xmllint will insert an <?xml?> header. it's easy enough to delete
+  " if you don't want it.
+  " delete the fake tags
+  2d
+  $d
+  " restore the 'normal' indentation, which is one extra level
+  " too deep due to the extra tags we wrapped around the document.
+  silent %<
+  " back to home
+  1
+  " restore the filetype
+  exe "set ft=" . l:origft
+endfunction
+command! PrettyXML call DoPrettyXML()
+"==json==%!python -m json.tool
+"===== curosor operate in the QUICKFIX, the location-list 要用nnoremap
+nnoremap <Leader>cn :cn<CR>
+nnoremap <Leader>ln :lne<CR>
+nnoremap <Leader>cp :cp<CR>
+nnoremap <Leader>lp :lp<CR>
+"popup setting
+nnoremap <Leader>w :w<CR>
+set completeopt=menuone,menu,longest,preview
+" The following are commented out as they cause vim to behave a lot
+" differently from regular Vi. They are highly recommended though.
+set showcmd " Show (partial) command in status line.
+set autowrite " Automatically save before commands like :next and :make
+" Instead of failing a command because of unsaved changes, instead raise a
+" dialogue asking if you wish to save changed files.
+set confirm
+" Use visual bell instead of beeping when doing something wrong
+set visualbell
+" Quickly time out on keycodes, but never time out on mappings
+set notimeout ttimeout ttimeoutlen=200
+" Always display the status line, even if only one window is displayed
+set laststatus=2
+"命令行高度
+set cmdheight=2
+" Better command-line completion
+set wildmenu
+"否则切换buff会提示必须保存
+set hidden
+"下划线
+set cursorline
+set cursorcolumn
+
+"定义edit
+nnoremap <Leader>e :e
+"定义quit
+noremap <Leader>q :q<CR><Esc>
+" nohl
+nnoremap <Leader>nh :nohl<CR><ESC>
+"设置快捷键将选中文本块复制至系统剪贴板
+vnoremap<Leader>y "+y
+vnoremap<Leader>1y "1y
+vnoremap<Leader>2y "2y
+vnoremap<Leader>3y "3y
+vnoremap<Leader>4y "4y
+vnoremap<Leader>5y "5y
+vnoremap<Leader>6y "6y
+vnoremap<Leader>7y "7y
+vnoremap<Leader>8y "8y
+vnoremap<Leader>9y "9y
+"设置快捷键将系统y剪贴板内容粘贴至vim
+vnoremap<Leader>p "+p
+vnoremap<Leader>1p "1p
+vnoremap<Leader>2p "2p
+vnoremap<Leader>3p "3p
+vnoremap<Leader>4p "4p
+vnoremap<Leader>5p "5p
+vnoremap<Leader>6p "6p
+vnoremap<Leader>7p "7p
+vnoremap<Leader>8p "8p
+vnoremap<Leader>9p "9p
+
+
+nmap <Leader>bp :bp<cr>
+nmap <Leader>bn :bn<cr>
+nmap <Leader>b1 :b1<cr>
+nmap <Leader>b2 :b2<cr>
+nmap <Leader>b3 :b3<cr>
+nmap <Leader>b4 :b4<cr>
+nmap <Leader>b5 :b5<cr>
+nmap <Leader>b6 :b6<cr>
+nmap <Leader>b7 :b7<cr>
+nmap <Leader>b8 :b8<cr>
+nmap <Leader>b9 :b9<cr>
+nmap <Leader>b0 :b0<cr>
+
+nmap <silent> <Leader>cll :ccl<CR>
+" Automatically read a file that has changed on disk
+set autoread
+
+"cd to the pwd of the curent file
+nnoremap <Leader>cd :cd %:p:h<CR>:pwd<CR>
+
+"-----------------START Plugins-------------------------------------------------------
+"---ctasgs---
+"ctags 跳转
+nmap <Leader>ts :tselect
+"---indent-guide---
+"
+let g:indent_guides_auto_colors = 0
+let g:indent_guides_start_level = 2
+let g:indent_guides_guide_size = 1
+let g:indent_guides_enable_on_vim_startup = 1
+augroup EditVim
+  autocmd!
+  autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd guibg=darkgrey ctermbg=236
+  autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=black ctermbg=236
+  autocmd BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn}   set filetype=mkd
+  autocmd BufNewFile,BufRead *.html.erb set filetype=eruby.html
+
+augroup END
+
+"=======surround.vim====for eruby====
+let g:surround_45 = "<% \r %>"
+let g:surround_61 = "<%= \r %>"
+
+"=======unite.vim======
+"
+nnoremap <silent> <Leader>ff  :Unite -buffer-name= file<CR>
+nnoremap <silent> <Leader>fb  :Unite -buffer-name= buffer file_mru<CR>
+nnoremap <silent> <Leader>ft  :Unite tag<CR>
+nnoremap <silent> <Leader>fr  :Unite -buffer-name= register<CR>
+
+let g:unite_enable_start_insert = 1
+autocmd FileType unite call s:unite_my_settings()
+function! s:unite_my_settings()"{{{
+  " Overwrite settings.
+
+  nmap <buffer> <ESC>      <Plug>(unite_exit)
+  imap <buffer> jj      <Plug>(unite_insert_leave)
+  "imap <buffer> <C-w>     <Plug>(unite_delete_backward_path)
+
+  " <C-l>: manual neocomplcache completion.
+  inoremap <buffer> <C-l>  <C-x><C-u><C-p><Down>
+endfunction"}}}
+
+let g:unite_source_file_mru_limit = 2048
+
+"------
+iab howu       home
+iab wiht       with
+iab algroithm  algorithm
+iab homw       home
+iab Acheive    Achieve
+iab acheive    achieve
+iab Alos       Also
+iab alos       also
+iab Aslo       Also
+iab aslo       also
+iab Becuase    Because
+iab becuase    because
+iab Bianries   Binaries
+iab bianries   binaries
+iab Bianry     Binary
+iab bianry     binary
+iab Charcter   Character
+iab charcter   character
+iab Charcters  Characters
+iab charcters  characters
+iab Exmaple    Example
+iab exmaple    example
+iab Exmaples   Examples
+iab exmaples   examples
+iab Fone       Phone
+iab fone       phone
+iab Lifecycle  Life-cycle
+iab lifecycle  life-cycle
+iab Lifecycles Life-cycles
+iab lifecycles life-cycles
+iab Seperate   Separate
+iab seperate   separate
+iab Seureth    Suereth
+iab seureth    suereth
+iab Shoudl     Should
+iab shoudl     should
+iab Taht       That
+iab taht       that
+iab Teh        The
+iab teh        the
+iab verctor    vector
+iab lenght     length
+iab gerp       grep
+iab fnid       find
+iab valude     value
+iab paln       plan
+iab tset       test
+iab szie       size
+iab XLOngLib  XLongLib
+iab XLongLIb  XLongLib
+iab XLOngLIb  XLongLib
+iab calss     class
+iab featrue   feature
+iab toure     tour
+iab lgoin     login
+iab satus     status
+iab stataus   status
+iab ture      true
+iab shwo      show
+iab edn       end
+iab destory   destroy
+iab privielge privilege
+iab acitve    active
+iab inacitve  inactive
+iab reloda    reload
+iab UserCharactera UserCharacter
+iab charactre character
+iab charactera character
+iab privielge privilege
+iab pakcage   package
+iab pakace    package
+iab attirbute attribute
+iab attirbutes attributes
+iab srot sort
+iab widht width
+iab cancle cancel
+iab brandh branch
+iab brandb branch
+iab ordesr orders
+iab onlien online
+iab resprite repsrite
+iab constanize constantize
+iab writter writer
+iab nunber number
+iab bumber number
+iab privaet private
+iab reutnr return
+iab reutrn return
+iab retunr return
+iab ordres orders
+iab adn and
+iab numebr number
+iab drawbasck drawbacks
+iab drawbacsk drawbacks
+iab drawbaksc drawbacks
+iab coupute compute
+iab colum column
+iab drawbakc drawback
+iab heloer helper
+iab heloepr helper
+iab tranfser transfer
+iab wdith width
+iab witdh width
+iab taks task
+iab counry country
+iab assest assets
+iab transfer_at transfer_at
+iab transfer transfer
+iab manaul manual
+iab stroage storage
+iab sucess success
+iab cofirm confirm
+iab cofirm_type confirm_type
+iab debeug debug
+iab contry country
+iab Contry Country
+iab prase parse
+iab filed field
+iab fileds fields

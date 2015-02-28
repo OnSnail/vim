@@ -82,7 +82,7 @@ set wildmenu
 set wildmode=longest:full,full
 
 " status line
-set statusline=%<%f\ %h%m%r%=%k[%{(&fenc==\"\")?&enc:&fenc}%{(&bomb?\",BOM\":\"\")}]\ %-14.(%l,%c%V%)\ %P
+set statusline=%<%f\ %h%m%r%=CODE[%b\ ,0x%B\ ]\ %k[%{(&fenc==\"\")?&enc:&fenc}%{(&bomb?\",BOM\":\"\")}]\ %-4.(%l,%c%V%)\ %P
 
 " auto encoding detecting
 set encoding=utf-8
@@ -113,8 +113,6 @@ nnoremap <Leader>hoo :highlight OverLength ctermbg=red ctermfg=white guibg=#5929
 
 " hilight extra spaces at end of line
 match Error '\s\+$'
-
-let g:load_doxygen_syntax=1
 
 " fix vim quick fix
 set errorformat^=%-GIn\ file\ included\ %.%#
@@ -189,7 +187,7 @@ augroup filetype
   autocmd! BufRead,BufNewFile *.proto set filetype=proto
   autocmd! BufRead,BufNewFile *.thrift set filetype=thrift
   autocmd! BufRead,BufNewFile *.pump set filetype=pump
-  " autocmd! BufRead,BufNewFile BUILD set filetype=blade
+  autocmd! BufRead,BufNewFile BUILD set filetype=blade
 augroup end
 
 " When editing a file, always jump to the last cursor position
@@ -201,7 +199,6 @@ autocmd BufReadPost * nested
 autocmd BufEnter /usr/include/c++/* nested setfiletype cpp
 autocmd BufEnter /usr/include/* nested call GnuIndent()
 autocmd BufWritePre * nested call RemoveTrailingSpace()
-autocmd FileType make nested colorscheme murphy |
 
 function SetLogHighLight()
   highlight LogFatal ctermbg=red guifg=red
@@ -214,9 +211,6 @@ function SetLogHighLight()
   " syntax match LogInfo "^I\d\+ .*$"
 endfunction
 autocmd BufEnter *.{log,INFO,WARNING,ERROR,FATAL} nested call SetLogHighLight()
-
-" auto insert gtest header inclusion for test source file
-autocmd BufNewFile *_test.{cpp,cxx,cc} nested :normal i#include "thirdparty/gtest/gtest.h"
 
 " auto insert gtest header inclusion for test source file
 function! s:InsertHeaderGuard()
@@ -355,11 +349,10 @@ set autoread
 nnoremap <Leader>cd :cd %:p:h<CR>:pwd<CR>
 
 "-----------------START Plugins-------------------------------------------------------
-"---ctasgs---
+"=====ctasgs---
 "ctags 跳转
 nmap <Leader>ts :tselect
-"---indent-guide---
-"
+"======indent-guide---
 let g:indent_guides_auto_colors = 0
 let g:indent_guides_start_level = 2
 let g:indent_guides_guide_size = 1
@@ -378,8 +371,7 @@ let g:surround_45 = "<% \r %>"
 let g:surround_61 = "<%= \r %>"
 
 "=======unite.vim======
-"
-nnoremap <silent> <Leader>ff  :Unite -buffer-name= file<CR>
+nnoremap <silent> <F5>  :Unite -buffer-name= file<CR>
 nnoremap <silent> <Leader>fb  :Unite -buffer-name= buffer file_mru<CR>
 nnoremap <silent> <Leader>ft  :Unite tag<CR>
 nnoremap <silent> <Leader>fr  :Unite -buffer-name= register<CR>
@@ -399,8 +391,13 @@ endfunction"}}}
 
 let g:unite_source_file_mru_limit = 2048
 let g:unite_source_file_mru_filename_format = ''
+"======end unite.vim
 
-"------
+"==========python-mode=====
+" Override go-to.definition key shortcut to Ctrl-]
+let g:pymode_rope_goto_definition_bind = "<C-]>"
+"===end python-mode
+
 iab howu       home
 iab wiht       with
 iab algroithm  algorithm

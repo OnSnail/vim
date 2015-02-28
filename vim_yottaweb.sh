@@ -10,11 +10,14 @@ fi
 
 cd ~/yottaweb
 ./ctags.sh
-vim -c "set tags=~/yottaweb/tags" \
-  -c "set path+=~/yottaweb" \
+vim --cmd "set tags=~/yottaweb/tags" \
+  --cmd "set path+=~/yottaweb" \
   -c "nnoremap <silent> <F5>  :<C-u>Unite -smartcase -buffer-name=files -start-insert file_rec/async:!<CR>" \
-  -c "nnoremap <F3>  :<C-u>Unite -smartcase -start-insert grep:~/yottaweb:--" \
-  -c "autocmd VimLeavePre * :mksession!  ~/.vim_sessions/yottaweb" \
-  -c "autocmd VimLeavePre * :wviminfo ~/.vim_viminfos/yottaweb" \
-  -c "autocmd VimEnter * :rviminfo ~/.vim_viminfos/yottaweb" \
+  -c "nnoremap <F3>  :<C-u>Unite -smartcase -start-insert grep:~/yottaweb:--python" \
+  -c "nnoremap <silent> <Leader>fjs  :<C-u>Unite -smartcase -start-insert grep:~/yottaweb/yottaweb/static/scripts:--js" \
+  -c "nnoremap <silent> <Leader>fhm  :<C-u>Unite -smartcase -start-insert grep:~/yottaweb/yottaweb/templates:--html" \
+  -c "nnoremap <silent> <Leader>fcs  :<C-u>Unite -smartcase -start-insert grep:~/yottaweb/yottaweb/static/less/:--less" \
+  --cmd "autocmd VimLeavePre * :mksession!  ~/.vim_sessions/yottaweb" \
+  --cmd "autocmd VimLeavePre * :wviminfo ~/.vim_viminfos/yottaweb" \
+  --cmd "autocmd VimEnter * :rviminfo ~/.vim_viminfos/yottaweb" \
   -S "~/.vim_sessions/yottaweb"

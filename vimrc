@@ -371,6 +371,7 @@ let g:unite_source_history_yank_enable = 1
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 call unite#custom#source('grep', 'matchers', 'matcher_fuzzy')
+call unite#custom#source('tag', 'matchers', 'matcher_fuzzy')
 
 call unite#custom_source('file_rec,file_rec/async,file_mru,file,grep',
       \ 'ignore_pattern', join([
@@ -576,6 +577,10 @@ let g:tagbar_type_go = {
 \ }
 nmap <Leader>tl :TagbarToggle<CR>
 "=======end tarbar=======
+"
+"=======easy-tags======
+let g:easytags_async=1
+"=======end easy-tags======
 
 "=======nerdtree======
 map <Leader>fl :NERDTreeToggle<CR>
@@ -701,3 +706,4 @@ iab Contry Country
 iab prase parse
 iab filed field
 iab fileds fields
+iab esay easy

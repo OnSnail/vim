@@ -366,10 +366,42 @@ let g:surround_45 = "<% \r %>"
 let g:surround_61 = "<%= \r %>"
 
 "=======unite.vim======
-nnoremap <silent> <F5>  :Unite -buffer-name= file<CR>
-nnoremap <silent> <Leader>fb  :Unite -buffer-name= buffer file_mru<CR>
-nnoremap <silent> <Leader>ft  :Unite tag<CR>
-nnoremap <silent> <Leader>fr  :Unite -buffer-name= register<CR>
+let g:unite_source_history_yank_enable = 1
+" 'matcher_project_ignore_files' not work
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+call unite#filters#sorter_default#use(['sorter_rank'])
+call unite#custom#source('grep', 'matchers', 'matcher_fuzzy')
+
+call unite#custom_source('file_rec,file_rec/async,file_mru,file,grep',
+      \ 'ignore_pattern', join([
+      \ '\.git/',
+      \ 'bootstrap/',
+      \ 'node_modules/',
+      \ 'app/storage',
+      \ '\.cache/',
+      \ '\.atom/',
+      \ '\.codeintel/',
+      \ '\.gitignore',
+      \ '*.swp',
+      \ 'tags',
+      \ '\.arcconfig',
+      \ '\.ropeproject/',
+      \ '*.log*',
+      \ ], '\|'))
+
+if executable('ag')
+  let g:unite_source_grep_command = 'ag'
+  let g:unite_source_grep_default_opts = '--line-numbers --nogroup --nocolor --column -S'
+  let g:unite_source_grep_recursive_opt = ''
+endif
+" grep and file_rec will be in vim_yotta**.sh use ! to rec to git
+nnoremap <F3>  :<C-u>Unite -smartcase -start-insert grep:.:--depth=3
+nnoremap <silent> <F5>  :<C-u>Unite -smartcase -buffer-name=files -start-insert file:.<CR>
+
+nnoremap <silent> <Leader>fb  :<C-u>Unite -buffer-name=mru -start-insert buffer file_mru<CR>
+nnoremap <silent> <Leader>ft  :<C-u>Unite tag<CR>
+nnoremap <silent> <Leader>fr  :<C-u>Unite register<CR>
+nnoremap <silent> <Leader>fy  :<C-u>Unite -buffer-name=yank history/yank<CR>
 
 let g:unite_enable_start_insert = 1
 autocmd FileType unite call s:unite_my_settings()
@@ -382,6 +414,12 @@ function! s:unite_my_settings()"{{{
 
   " <C-l>: manual neocomplcache completion.
   inoremap <buffer> <C-l>  <C-x><C-u><C-p><Down>
+
+  " Play nice with supertab
+  let b:SuperTabDisabled=1
+  " Enable navigation with control-j and control-k in insert mode
+  imap <buffer> <C-j>   <Plug>(unite_select_next_line)
+  imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
 endfunction"}}}
 
 let g:unite_source_file_mru_limit = 2048
@@ -542,6 +580,7 @@ nmap <Leader>tl :TagbarToggle<CR>
 "=======nerdtree======
 map <Leader>fl :NERDTreeToggle<CR>
 "=======end nerdtree======
+"
 
 iab howu       home
 iab wiht       with

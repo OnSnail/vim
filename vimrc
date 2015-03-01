@@ -582,10 +582,26 @@ let g:tagbar_type_go = {
 nmap <Leader>tl :TagbarToggle<CR>
 "=======end tarbar=======
 "
-"=======easy-tags======
-let g:easytags_async=1
-"=======end easy-tags======
-
+"=======syntastic=======
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_enable_highlighting=1
+let g:syntastic_enable_signs=1
+" let g:syntastic_quiet_messages = { "type": "style" }
+let g:syntastic_error_symbol = '✗'
+let g:syntastic_warning_symbol = '⚠'
+let g:syntastic_mode_map={ 'mode': 'active',
+      \ 'active_filetypes': ['javascript', 'scala'],
+      \ 'passive_filetypes': ['slim', 'haml', 'scss', 'css', 'html', 'less'] }
+let g:syntastic_javascript_checkers = ['jshint']
+let g:syntastic_javascript_jshint_args = "--verbose"
+let g:syntastic_scala_checkers = ['fsc', 'scalastyle']
+let g:syntastic_scala_scalastyle_jar = '~/github/wuranbo/vim/scalastyle_2.10-0.6.0-batch.jar'
+let g:syntastic_scala_scalastyle_config_file = '~/github/wuranbo/vim/scalastyle_config.xml'
+"=======end syntastic=====
+"
 "=======nerdtree======
 map <Leader>fl :NERDTreeToggle<CR>
 "=======end nerdtree======

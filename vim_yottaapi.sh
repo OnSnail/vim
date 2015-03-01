@@ -9,11 +9,11 @@ if [ $# -eq 1 ]; then
 fi
 
 cd ~/yottaapi
-./ctags.sh
+bash ~/github/wuranbo/vim/ctags_yottaapi.sh
 vim -c "set tags=~/yottaapi/tags" \
   -c "set path+=~/yottaapi" \
   -c "nnoremap <silent> <F5>  :<C-u>Unite -smartcase -buffer-name=files -start-insert file_rec/async:!<CR>" \
-  -c "nnoremap <F3>  :<C-u>Unite -smartcase -start-insert grep:~/yottaapi:--python" \
+  -c "nnoremap <F3>  :<C-u>Unite -smartcase -start-insert grep:~/yottaapi:--python<CR>" \
   -c "autocmd VimLeavePre * :mksession!  ~/.vim_sessions/yottaapi" \
   -c "autocmd VimLeavePre * :wviminfo ~/.vim_viminfos/yottaapi" \
   -c "autocmd VimEnter * :rviminfo ~/.vim_viminfos/yottaapi" \

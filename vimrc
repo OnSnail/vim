@@ -548,6 +548,18 @@ let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
 "=======end neosnippet====
 
 "=======start tarbar=======
+let g:tagbar_type_javascript = {
+    \ 'ctagstype' : 'JavaScript',
+    \ 'ctagsbin' : 'ctags',
+    \ 'kinds'     : [
+        \ 'c:classes',
+        \ 'm:methods',
+        \ 'p:properties',
+        \ 'v:global variables',
+        \ 'o:objects',
+        \ 'f:functions'
+    \ ]
+\ }
 let g:tagbar_type_go = {
     \ 'ctagstype' : 'go',
     \ 'kinds'     : [

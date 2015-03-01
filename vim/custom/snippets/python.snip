@@ -1,0 +1,22 @@
+snippet head-run
+abbr #!/usr/bin/env python -*- utf-8 -*-
+prev_word   '^'
+  # !/usr/bin/env python
+  # -*- coding: utf-8 -*-
+  ${0}
+
+
+snippet head
+abbr -*- utf-8 -*- author copyright
+prev_word   '^'
+  # -*- coding: utf-8 -*-
+  # wu.ranbo@yottabyte.cn
+  # `strftime("%Y-%m-%d")`
+  # Copyright `strftime("%Y")` Yottabyte
+  # filename: `substitute(expand('%:p'), '^.\{-}/src/', '', '')`
+  # file description: ${0}
+  __author__ = 'wu.ranbo'
+
+snippet todo
+abbr TODO(wu.ranbo@yottabyte.cn)
+  # TODO(wu.ranbo@yottabyte.cn)

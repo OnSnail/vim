@@ -9,13 +9,6 @@ filetype plugin indent on
 "=========My Configuration=========================
 "===================================================================================
 "===read 'Seven habits of effective text editing' http://www.moolenaar.net/habits.html===
-"===make youself simliar the utils of linux===sort,cut, tr, paste, find, grep, gawk, sed
-"==!使用的三种方式
-"1. r !ls ./  ,  !google-chrome %  ,  !gedit % :作为shell执行,与vim指令配合
-"2. '<,'>!sort -n ,%!sort -n  :以当前为输入，以sort的结果作为输出
-"3. '<,'>w !sort >1.result, 加w以当前部分作为输入，结果不作为输出
-"vimshell vimgbd http://clewn.sourceforge.net/ http://www.wana.at/vimshell/
-"runtime! debian.vim
 
 "设置leader
 let mapleader=","
@@ -69,8 +62,6 @@ set ignorecase " Do case insensitive matching 添加\c可忽略大小写
 
 " quickfix settings
 compiler gcc
-
-"let g:NeoComplCache_EnableAtStartup = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Display settings section
@@ -383,11 +374,14 @@ call unite#custom_source('file_rec,file_rec/async,file_mru,file,grep',
       \ '\.atom/',
       \ '\.codeintel/',
       \ '\.gitignore',
-      \ '*.swp',
+      \ '.*.swp',
       \ 'tags',
       \ '\.arcconfig',
       \ '\.ropeproject/',
-      \ '*.log*',
+      \ '.*.log',
+      \ '.*.gz',
+      \ '.*.tar',
+      \ '.*.tar.gz',
       \ ], '\|'))
 
 if executable('ag')
@@ -585,7 +579,7 @@ nmap <Leader>tl :TagbarToggle<CR>
 "=======syntastic=======
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
 let g:syntastic_enable_highlighting=1
 let g:syntastic_enable_signs=1
@@ -600,130 +594,20 @@ let g:syntastic_javascript_jshint_args = "--verbose"
 let g:syntastic_scala_checkers = ['fsc', 'scalastyle']
 let g:syntastic_scala_scalastyle_jar = '~/github/wuranbo/vim/scalastyle_2.10-0.6.0-batch.jar'
 let g:syntastic_scala_scalastyle_config_file = '~/github/wuranbo/vim/scalastyle_config.xml'
+let g:syntastic_go_checkers = ['go', 'gofmt', 'golint', 'govet']
 "=======end syntastic=====
 "
 "=======nerdtree======
 map <Leader>fl :NERDTreeToggle<CR>
 "=======end nerdtree======
 "
+"======vim-go======
+"let g:go_highlight_functions = 1
+"let g:go_highlight_methods = 1
+"let g:go_highlight_structs = 1
+"======end vim-go======
+"
 
-iab howu       home
-iab wiht       with
-iab algroithm  algorithm
-iab homw       home
-iab Acheive    Achieve
-iab acheive    achieve
-iab Alos       Also
-iab alos       also
-iab Aslo       Also
-iab aslo       also
-iab Becuase    Because
-iab becuase    because
-iab Bianries   Binaries
-iab bianries   binaries
-iab Bianry     Binary
-iab bianry     binary
-iab Charcter   Character
-iab charcter   character
-iab Charcters  Characters
-iab charcters  characters
-iab Exmaple    Example
-iab exmaple    example
-iab Exmaples   Examples
-iab exmaples   examples
-iab Fone       Phone
-iab fone       phone
-iab Lifecycle  Life-cycle
-iab lifecycle  life-cycle
-iab Lifecycles Life-cycles
-iab lifecycles life-cycles
-iab Seperate   Separate
-iab seperate   separate
-iab Seureth    Suereth
-iab seureth    suereth
-iab Shoudl     Should
-iab shoudl     should
-iab Taht       That
-iab taht       that
-iab Teh        The
-iab teh        the
-iab verctor    vector
-iab lenght     length
-iab gerp       grep
-iab fnid       find
-iab valude     value
-iab paln       plan
-iab tset       test
-iab szie       size
-iab XLOngLib  XLongLib
-iab XLongLIb  XLongLib
-iab XLOngLIb  XLongLib
-iab calss     class
-iab featrue   feature
-iab toure     tour
-iab lgoin     login
-iab satus     status
-iab stataus   status
-iab ture      true
-iab shwo      show
-iab edn       end
-iab destory   destroy
-iab privielge privilege
-iab acitve    active
-iab inacitve  inactive
-iab reloda    reload
-iab UserCharactera UserCharacter
-iab charactre character
-iab charactera character
-iab privielge privilege
-iab pakcage   package
-iab pakace    package
-iab attirbute attribute
-iab attirbutes attributes
-iab srot sort
-iab widht width
-iab cancle cancel
-iab brandh branch
-iab brandb branch
-iab ordesr orders
-iab onlien online
-iab resprite repsrite
-iab constanize constantize
-iab writter writer
-iab nunber number
-iab bumber number
-iab privaet private
-iab reutnr return
-iab reutrn return
-iab retunr return
-iab ordres orders
-iab adn and
-iab numebr number
-iab drawbasck drawbacks
-iab drawbacsk drawbacks
-iab drawbaksc drawbacks
-iab coupute compute
-iab colum column
-iab drawbakc drawback
-iab heloer helper
-iab heloepr helper
-iab tranfser transfer
-iab wdith width
-iab witdh width
-iab taks task
-iab counry country
-iab assest assets
-iab transfer_at transfer_at
-iab transfer transfer
-iab manaul manual
-iab stroage storage
-iab sucess success
-iab cofirm confirm
-iab cofirm_type confirm_type
-iab debeug debug
-iab contry country
-iab Contry Country
-iab prase parse
-iab filed field
-iab fileds fields
-iab esay easy
+"tips
+"'&' can use to repeat the last :%s
+"<C-a> on a number make it increase

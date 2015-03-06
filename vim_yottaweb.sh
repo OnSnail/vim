@@ -12,7 +12,7 @@ cd ~/yottaweb
 bash ~/github/wuranbo/vim/ctags_yottaweb.sh
 vim --cmd "set tags=~/yottaweb/tags" \
   --cmd "set path+=~/yottaweb" \
-  -c "nnoremap <silent> <F5>  :<C-u>Unite -smartcase -buffer-name=files -start-insert file_rec/async:!<CR>" \
+  -c "nnoremap <silent> <F5>  :<C-u>Unite -smartcase -buffer-name=files -start-insert file_rec/async:~/yottabyte/src/YottaWeb/:<CR>" \
   -c "nnoremap <F3>  :<C-u>Unite -smartcase -start-insert grep:~/yottaweb:--python<CR>" \
   -c "nnoremap <silent> <Leader>gjs  :<C-u>Unite -smartcase -start-insert grep:~/yottaweb/yottaweb/static/scripts:--js<CR>" \
   -c "nnoremap <silent> <Leader>ghm  :<C-u>Unite -smartcase -start-insert grep:~/yottaweb/yottaweb/templates:--html<CR>" \

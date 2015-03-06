@@ -2,6 +2,7 @@
 execute pathogen#infect()
 syntax on
 syntax enable
+filetype plugin on
 filetype plugin indent on
 " ============== End for pathogen ======
 
@@ -26,8 +27,6 @@ endif
 " common settings section
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible
-filetype plugin on
-filetype plugin indent on
 
 " 取消所有代码折叠
 set nofoldenable
@@ -353,8 +352,6 @@ augroup EditVim
 augroup END
 
 "=======surround.vim====for eruby====
-let g:surround_45 = "<% \r %>"
-let g:surround_61 = "<%= \r %>"
 
 "=======unite.vim======
 let g:unite_source_history_yank_enable = 1
@@ -368,6 +365,7 @@ call unite#custom_source('file_rec,file_rec/async,file_mru,file,grep',
       \ 'ignore_pattern', join([
       \ '\.git/',
       \ 'bootstrap/',
+      \ '.sass-cache',
       \ 'node_modules/',
       \ 'app/storage',
       \ '\.cache/',
@@ -530,7 +528,7 @@ endif
 let g:neosnippet#enable_snipmate_compatibility = 1
 
 " Tell Neosnippet about the other snippets
-let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets,~/.vim/custom/snippets'
+let g:neosnippet#snippets_directory='~/.vim/custom/snippets,~/.vim/bundle/vim-go/gosnippets/snippets,~/.vim/bundle/vim-snippets/snippets'
 "=======end neosnippet====
 
 "=======start tarbar=======
@@ -594,7 +592,6 @@ let g:syntastic_javascript_jshint_args = "--verbose"
 let g:syntastic_scala_checkers = ['fsc', 'scalastyle']
 let g:syntastic_scala_scalastyle_jar = '~/github/wuranbo/vim/scalastyle_2.10-0.6.0-batch.jar'
 let g:syntastic_scala_scalastyle_config_file = '~/github/wuranbo/vim/scalastyle_config.xml'
-let g:syntastic_go_checkers = ['go', 'gofmt', 'golint', 'govet']
 "=======end syntastic=====
 "
 "=======nerdtree======
@@ -605,6 +602,14 @@ map <Leader>fl :NERDTreeToggle<CR>
 "let g:go_highlight_functions = 1
 "let g:go_highlight_methods = 1
 "let g:go_highlight_structs = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
+au FileType go nmap <Leader>gim <Plug>(go-implements)
+au FileType go nmap <Leader>gd <Plug>(go-def-vertical)
+au FileType go nmap <Leader>grn <Plug>(go-rename)
+let g:go_fmt_command = "goimports"
+let g:go_fmt_autosave = 1
+let g:go_auto_type_info = 1
 "======end vim-go======
 "
 

@@ -3,3 +3,4 @@ vim_sessions/
 vim_viminfos/
 *.swp
 scalastyle_2.10-0.6.0-batch.jar
+*.bak

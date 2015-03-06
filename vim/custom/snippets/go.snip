@@ -1,10 +1,15 @@
 snippet head
 abbr head comment
-	// Copyright (C) 2014-`strftime("%Y")` Yottabyte the original author or authors.
+options head
+  // Copyright (C) 2014-`strftime("%Y")` Yottabyte the original author or authors.
   // wuranbo(wu.ranbo@yottabyte.cn)
   // `strftime("%Y/%m/%d")`
 
 snippet     todo
 abbr        todo
-prev_word   '^'
-	// TODO(wu.ranbo@yottabyte.cn) ${0}
+  // TODO(wu.ranbo@yottabyte.cn) ${0}
+
+snippet     pr
+abbr        fmt.Printf("%v\n", v)
+  fmt.Printf("${1:%v}\n"${2:, value})${0}
+

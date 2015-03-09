@@ -333,6 +333,12 @@ set autoread
 "cd to the pwd of the curent file
 nnoremap <Leader>cd :cd %:p:h<CR>:pwd<CR>
 
+" use ,F to jump to tag in a vertical split. !!See below rope .
+nnoremap <silent> <C-]> :let word=expand("<cword>")<CR>:vsp<CR>:wincmd w<cr>:exec("tag ". word)<cr>
+
+" use ,gf to go to file in a vertical split
+nnoremap <silent> gf :vertical botright wincmd f<CR>
+
 "-----------------START Plugins-------------------------------------------------------
 "=====ctasgs---
 "ctags 跳转
@@ -393,7 +399,8 @@ endif
 nnoremap <F3>  :<C-u>Unite -smartcase -start-insert grep:.:--depth=3
 nnoremap <silent> <F5>  :<C-u>Unite -smartcase -buffer-name=files -start-insert file:.<CR>
 
-nnoremap <silent> <Leader>fb  :<C-u>Unite -buffer-name=mru -start-insert buffer file_mru<CR>
+nnoremap <silent> <Leader>fb  :<C-u>Unite -smartcase -buffer-name=mru -start-insert buffer file_mru<CR>
+nnoremap <silent> <Leader>ff  :<C-u>Unite -smartcase -buffer-name=files -start-insert file:.<CR>
 nnoremap <silent> <Leader>ft  :<C-u>Unite tag<CR>
 nnoremap <silent> <Leader>fr  :<C-u>Unite register<CR>
 nnoremap <silent> <Leader>fy  :<C-u>Unite -buffer-name=yank history/yank<CR>
@@ -419,11 +426,17 @@ endfunction"}}}
 
 let g:unite_source_file_mru_limit = 2048
 let g:unite_source_file_mru_filename_format = ''
+
+let g:unite_source_tag_max_fname_length = 83
 "======end unite.vim
 
 "==========python-mode=====
 " Override go-to.definition key shortcut to Ctrl-]
+
+" use custom map
 let g:pymode_rope_goto_definition_bind = "<C-]>"
+let g:pymode_rope_goto_definition_cmd = "vsplit"
+let g:pymode_rope_lookup_project = 1
 "===end python-mode
 "
 
@@ -606,8 +619,8 @@ map <Leader>fl :NERDTreeToggle<CR>
 "let g:go_highlight_structs = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
-au FileType go nmap <Leader>gim <Plug>(go-implements)
-au FileType go nmap <Leader>gd <Plug>(go-def-vertical)
+"au FileType go nmap <Leader>gim <Plug>(go-implements)
+au FileType go nmap <C-]> <Plug>(go-def-vertical)
 au FileType go nmap <Leader>grn <Plug>(go-rename)
 let g:go_fmt_command = "goimports"
 let g:go_fmt_autosave = 1

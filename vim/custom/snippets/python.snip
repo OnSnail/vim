@@ -14,7 +14,7 @@ prev_word   '^'
   # `strftime("%Y-%m-%d")`
   # Copyright `strftime("%Y")` Yottabyte
   # filename: `substitute(expand('%:p'), '^.\{-}/src/', '', '')`
-  # file description: ${0}
+  # file description: `substitute(system('git rev-parse --show-prefix'), '\n', '', '')`${0}
   __author__ = 'wu.ranbo'
 
 snippet todo

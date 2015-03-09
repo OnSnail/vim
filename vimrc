@@ -361,7 +361,9 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 call unite#custom#source('grep', 'matchers', 'matcher_fuzzy')
 call unite#custom#source('tag', 'matchers', 'matcher_fuzzy')
 
-call unite#custom_source('file_rec,file_rec/async,file_mru,file,grep',
+" no put grep,file_rec/git,file_rec/async which are used in vim_yotta*.sh, got bug:will ignore line which has
+" 'login'
+call unite#custom_source('file_rec,file_mru,file',
       \ 'ignore_pattern', join([
       \ '\.git/',
       \ 'bootstrap/',
@@ -384,7 +386,7 @@ call unite#custom_source('file_rec,file_rec/async,file_mru,file,grep',
 
 if executable('ag')
   let g:unite_source_grep_command = 'ag'
-  let g:unite_source_grep_default_opts = '--line-numbers --nogroup --nocolor --column -S'
+  let g:unite_source_grep_default_opts = '--line-numbers --nogroup --nocolor -S'
   let g:unite_source_grep_recursive_opt = ''
 endif
 " grep and file_rec will be in vim_yotta**.sh use ! to rec to git

@@ -13,8 +13,8 @@ prev_word   '^'
   # wu.ranbo@yottabyte.cn
   # `strftime("%Y-%m-%d")`
   # Copyright `strftime("%Y")` Yottabyte
-  # filename: `substitute(expand('%:p'), '^.\{-}/src/', '', '')`
-  # file description: `substitute(system('git rev-parse --show-prefix'), '\n', '', '')`${0}
+  # filename: `substitute(system('git rev-parse --show-prefix'), '\n', '', '')``expand('%:t')`
+  # file description: ${0}
   __author__ = 'wu.ranbo'
 
 snippet todo

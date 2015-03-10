@@ -400,7 +400,7 @@ nnoremap <F3>  :<C-u>Unite -smartcase -start-insert grep:.:--depth=3
 nnoremap <silent> <F5>  :<C-u>Unite -smartcase -buffer-name=files -start-insert file:.<CR>
 
 nnoremap <silent> <Leader>fb  :<C-u>Unite -smartcase -buffer-name=mru -start-insert buffer file_mru<CR>
-nnoremap <silent> <Leader>ff  :<C-u>Unite -smartcase -buffer-name=files -start-insert file:.<CR>
+nnoremap <silent> <Leader>ff  :cd %:p:h<CR>:<C-u>Unite -smartcase -buffer-name=files -start-insert file:.<CR>
 nnoremap <silent> <Leader>ft  :<C-u>Unite tag<CR>
 nnoremap <silent> <Leader>fr  :<C-u>Unite register<CR>
 nnoremap <silent> <Leader>fy  :<C-u>Unite -buffer-name=yank history/yank<CR>

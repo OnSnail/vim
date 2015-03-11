@@ -1,0 +1,17 @@
+snippet head-run
+abbr #!/usr/bin/env bash
+prev_word   '^'
+  # !/usr/bin/env bash
+  ${0}
+
+
+snippet head
+abbr -*- utf-8 -*- author copyright
+prev_word   '^'
+  # !/usr/bin/env bash
+  # wu.ranbo@yottabyte.cn
+  # `strftime("%Y-%m-%d")`
+  # Copyright `strftime("%Y")` Yottabyte
+  # filename: `substitute(system('git rev-parse --show-prefix'), '\n', '', '')``expand('%:t')`
+  # file description: ${1}
+

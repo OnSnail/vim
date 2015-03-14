@@ -437,6 +437,10 @@ let g:unite_source_tag_max_fname_length = 83
 let g:pymode_rope_goto_definition_bind = "<C-]>"
 let g:pymode_rope_goto_definition_cmd = "vsplit"
 let g:pymode_rope_lookup_project = 1
+" lint
+let g:pymode_options_max_line_length = 80
+let g:pymode_lint_options_pep8 = {'max_line_length': 120}
+let g:pymode_lint_options_pylint = {'max-line-length': 120}
 "===end python-mode
 "
 

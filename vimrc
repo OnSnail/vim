@@ -517,7 +517,7 @@ inoremap <expr><C-e>  neocomplete#cancel_popup()
 autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
 autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+"autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
 " Enable heavy omni completion.
@@ -632,6 +632,7 @@ let g:go_auto_type_info = 1
 "======end vim-go======
 "
 
-"tips
-"'&' can use to repeat the last :%s
-"<C-a> on a number make it increase
+" tips
+" 1. '&' can use to repeat the last :%s
+" 2. <C-a> on a number make it increase
+" 3. zA, za 两个命令flod和unflod当前

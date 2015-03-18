@@ -10,8 +10,7 @@ fi
 
 cd ~/yottaweb
 bash ~/github/wuranbo/vim/ctags_yottaweb.sh
-vim --cmd "set tags=~/yottaweb/tags" \
-  --cmd "set path+=~/yottaweb" \
+vim --cmd "set path+=~/yottaweb" \
   -c "nnoremap <silent> <F5>  :<C-u>Unite -smartcase -buffer-name=files -start-insert file_rec/git:/Users/wrb/yottabyte/src/YottaWeb/:<CR>" \
   -c "nnoremap <F3>  :<C-u>Unite -smartcase -start-insert grep:/Users/wrb/yottabyte/src/YottaWeb/:--python<CR>" \
   -c "nnoremap <silent> <Leader>gjs  :<C-u>Unite -smartcase -start-insert grep:/Users/wrb/yottabyte/src/yottaweb/yottaweb/static/scripts:--js<CR>" \
@@ -20,4 +19,6 @@ vim --cmd "set tags=~/yottaweb/tags" \
   --cmd "autocmd VimLeavePre * :mksession!  ~/.vim_sessions/yottaweb" \
   --cmd "autocmd VimLeavePre * :wviminfo ~/.vim_viminfos/yottaweb" \
   --cmd "autocmd VimEnter * :rviminfo ~/.vim_viminfos/yottaweb" \
+  --cmd "autocmd FileType python set tags=~/yottaweb/tags" \
+  --cmd "autocmd FileType javascript set tags=~/yottaweb/js_tags" \
   -S "~/.vim_sessions/yottaweb"

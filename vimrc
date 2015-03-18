@@ -441,6 +441,12 @@ let g:pymode_rope_lookup_project = 1
 let g:pymode_options_max_line_length = 80
 let g:pymode_lint_options_pep8 = {'max_line_length': 120}
 let g:pymode_lint_options_pylint = {'max-line-length': 120}
+
+let g:pymode_rope_completion = 1
+let g:pymode_rope_complete_on_dot = 1
+let g:pymode_rope_autoimport = 1
+let g:pymode_rope_autoimport_modules = ['os', 'datetime']
+let g:pymode_rope_autoimport_import_after_complete = 0
 "===end python-mode
 "
 
@@ -517,7 +523,6 @@ inoremap <expr><C-e>  neocomplete#cancel_popup()
 autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
 autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-"autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
 " Enable heavy omni completion.
@@ -532,6 +537,13 @@ let g:neocomplete#sources#omni#input_patterns.go = '[^.[:digit:] *\t]\.\w*'
 " For perlomni.vim setting.
 " https://github.com/c9s/perlomni.vim
 let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+
+" == python-mode has autocomplete
+" autocmd FileType python NeoCompleteDisable
+" call neocomplete#custom#source('dictionary',
+        "\ 'disabled_filetypes', {'python' : 1})
+" let g:neocomplete#sources#omni#input_patterns.python = ''
+" autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 "=======end neocomplete=====
 "=======start neosnippet====
 " Plugin key-mappings.

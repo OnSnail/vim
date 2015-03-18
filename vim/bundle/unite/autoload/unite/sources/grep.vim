@@ -101,9 +101,6 @@ function! s:source.hooks.on_init(args, context) "{{{
     elseif target == '**'
       " Optimized.
       let target = '.'
-    else
-      " Escape filename.
-      let target = escape(target, ' ')
     endif
 
     let a:context.source__target = [target]
@@ -115,8 +112,9 @@ function! s:source.hooks.on_init(args, context) "{{{
   let a:context.source__extra_opts = get(args, 1, '')
 
   let a:context.source__input = get(args, 2, a:context.input)
-  if a:context.source__input == ''
-    let a:context.source__input = unite#util#input('Pattern: ')
+  if a:context.source__input == '' || a:context.unite__is_restart
+    let a:context.source__input = unite#util#input('Pattern: ',
+          \ a:context.source__input)
   endif
 
   call unite#print_source_message('Pattern: '
@@ -211,8 +209,8 @@ function! s:source.gather_candidates(args, context) "{{{
     \   recursive_opt,
     \   a:context.source__extra_opts,
     \   string(a:context.source__input),
-    \   join(map(a:context.source__target,
-    \           "substitute(v:val, '/$', '', '')")),
+    \   join(map(copy(a:context.source__target),
+    \           "unite#util#escape_shell(substitute(v:val, '/$', '', ''))"))
     \)
 
   call unite#print_source_message('Command-line: ' . cmdline, s:source.name)

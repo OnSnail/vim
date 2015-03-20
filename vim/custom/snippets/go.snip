@@ -5,6 +5,7 @@ options head
   // wuranbo(wu.ranbo@yottabyte.cn)
   // `substitute(system('git rev-parse --show-prefix'), '\n', '', '')``expand('%:t')`
   // `strftime("%Y/%m/%d")`
+  ${0}
 
 snippet     todo
 abbr        todo
@@ -12,5 +13,12 @@ abbr        todo
 
 snippet     pr
 abbr        fmt.Printf("%v\n", v)
-  fmt.Printf("${1:%v}\n"${2:, value})${0}
+  fmt.Printf("${1:%v}\n"${2:, value})
+  ${0}
 
+snippet     errl
+abbr        errlog if err != nil { log.Fatal(err) }
+  if err != nil {
+    ${1:log.Fatal(err)}
+  }
+  ${0}

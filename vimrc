@@ -173,6 +173,7 @@ augroup filetype
   autocmd! BufRead,BufNewFile *.thrift set filetype=thrift
   autocmd! BufRead,BufNewFile *.pump set filetype=pump
   autocmd! BufRead,BufNewFile BUILD set filetype=blade
+  autocmd! BufRead,BufNewFile *.avsc set filetype=json
 augroup end
 
 " When editing a file, always jump to the last cursor position
@@ -251,6 +252,7 @@ function! DoPrettyXML()
   exe "set ft=" . l:origft
 endfunction
 command! PrettyXML call DoPrettyXML()
+command! PrettyJSON :% !python -m json.tool
 "==json==%!python -m json.tool
 "===== curosor operate in the QUICKFIX, the location-list 要用nnoremap
 nnoremap <Leader>cn :cn<CR>
@@ -532,17 +534,18 @@ endif
 "let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 "let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
 "let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-let g:neocomplete#sources#omni#input_patterns.go = '[^.[:digit:] *\t]\.\w*'
 
 " For perlomni.vim setting.
 " https://github.com/c9s/perlomni.vim
 let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 
 " == python-mode has autocomplete
+"let g:neocomplete#sources#omni#input_patterns.go = '[^.[:digit:] *\t]\.\w*'
+let g:neocomplete#sources#omni#input_patterns.go = '\h\w*'
+let g:neocomplete#sources#omni#input_patterns.python = '\h\w*'
 " autocmd FileType python NeoCompleteDisable
 " call neocomplete#custom#source('dictionary',
         "\ 'disabled_filetypes', {'python' : 1})
-" let g:neocomplete#sources#omni#input_patterns.python = ''
 " autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 "=======end neocomplete=====
 "=======start neosnippet====
@@ -615,6 +618,7 @@ let g:syntastic_enable_signs=1
 " let g:syntastic_quiet_messages = { "type": "style" }
 let g:syntastic_error_symbol = '✗'
 let g:syntastic_warning_symbol = '⚠'
+" go python already working with vim-go and python-mode
 let g:syntastic_mode_map={ 'mode': 'active',
       \ 'active_filetypes': ['javascript', 'scala'],
       \ 'passive_filetypes': ['slim', 'haml', 'scss', 'css', 'html', 'less'] }

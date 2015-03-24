@@ -17,7 +17,7 @@ MYSQL=/usr/local/mysql/bin
 #gitbin
 GIT=/usr/local/git/bin
 # ranbo
-export PATH=$GOPATH/bin:$GO_INSTALL_HOME/bin:$MYSQL:$GIT:$HOME/bin:$HOME/pro/arcanist/arcanist/bin:$SCALA_HOME/bin:$PATH
+export PATH=$GO_INSTALL_HOME/bin:$MYSQL:$GIT:$HOME/bin:$HOME/pro/arcanist/arcanist/bin:$SCALA_HOME/bin:$PATH:$GOPATH/bin
 #export PATH=$MYSQL:$GIT:$HOME/bin:/usr/local/bin:$PATH
 #export PATH=$PATH:$HOME/pro/arcanist/arcanist/bin/
 #export PATH=$PATH:$SCALA_HOME/bin

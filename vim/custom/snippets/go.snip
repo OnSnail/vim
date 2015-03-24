@@ -22,3 +22,11 @@ abbr        errlog if err != nil { log.Fatal(err) }
     ${1:log.Fatal(err)}
   }
   ${0}
+
+snippet     funcinit
+abbr        func init() {}
+alias       funci
+  func init() {
+    ${0}
+  }
+

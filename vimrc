@@ -284,6 +284,10 @@ set hidden
 "下划线
 set cursorline
 set cursorcolumn
+"不折行
+set nowrap
+"折行
+"set wrap
 
 "定义edit
 nnoremap <Leader>e :e
@@ -408,7 +412,6 @@ nnoremap <silent> <Leader>fr  :<C-u>Unite register<CR>
 nnoremap <silent> <Leader>fy  :<C-u>Unite -buffer-name=yank history/yank<CR>
 
 let g:unite_enable_start_insert = 1
-autocmd FileType unite call s:unite_my_settings()
 function! s:unite_my_settings()"{{{
   " Overwrite settings.
 
@@ -425,6 +428,7 @@ function! s:unite_my_settings()"{{{
   imap <buffer> <C-j>   <Plug>(unite_select_next_line)
   imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
 endfunction"}}}
+autocmd FileType unite call s:unite_my_settings()
 
 let g:unite_source_file_mru_limit = 2048
 let g:unite_source_file_mru_filename_format = ''
@@ -620,7 +624,7 @@ let g:syntastic_error_symbol = '✗'
 let g:syntastic_warning_symbol = '⚠'
 " go python already working with vim-go and python-mode
 let g:syntastic_mode_map={ 'mode': 'active',
-      \ 'active_filetypes': ['javascript', 'scala'],
+      \ 'active_filetypes': ['javascript', 'scala', 'go'],
       \ 'passive_filetypes': ['slim', 'haml', 'scss', 'css', 'html', 'less'] }
 let g:syntastic_javascript_checkers = ['jshint']
 let g:syntastic_javascript_jshint_args = "--verbose"
@@ -642,6 +646,8 @@ let g:go_highlight_build_constraints = 1
 "au FileType go nmap <Leader>gim <Plug>(go-implements)
 au FileType go nmap <C-]> <Plug>(go-def-vertical)
 au FileType go nmap <Leader>grn <Plug>(go-rename)
+au FileType go nmap <Leader>gbr <Plug>(go-doc-browser)
+au FileType go nmap <Leader>gim <Plug>(go-implements)
 let g:go_fmt_command = "goimports"
 let g:go_fmt_autosave = 1
 let g:go_auto_type_info = 1

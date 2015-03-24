@@ -11,6 +11,7 @@ fi
 cd ~/rizhiyi_manager
 bash ~/github/wuranbo/vim/ctags_rizhiyi_manager.sh
 vim --cmd "set path+=~/rizhiyi_manager" \
+  --cmd "set path+=~/goworkspace/" \
   --cmd "autocmd BufNewFile,BufRead *.tpl set filetype=html" \
   -c "nnoremap <silent> <F5>  :<C-u>Unite -smartcase -buffer-name=files -start-insert file_rec/git:/Users/wrb/yottabyte/src/rizhiyi_manager/:<CR>" \
   -c "nnoremap <F3>  :<C-u>Unite -smartcase -start-insert grep:/Users/wrb/yottabyte/src/rizhiyi_manager/server/:--go<CR>" \

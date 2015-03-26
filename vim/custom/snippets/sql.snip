@@ -1,0 +1,21 @@
+snippet head
+abbr -- -----
+prev_word   '^'
+  -- -----------------
+  -- ${1}
+  -- -----------------
+  ${0}
+
+snippet     TRIGGER
+abbr        CREATE TRIGGER trigger_name UPDATE/DELETE OF col ON table
+  CREATE TRIGGER ${1:name} ${2:AFTER} ${3:UPDATE OF} ON ${4:table}
+    BEGIN
+      ${5}
+    END;
+  ${6}
+
+snippet     DROP_TRIGGER
+abbr        DROP TRIGGER IF EXISTS
+  DROP TRIGGER IF EXISTS ${1:name}
+  ${0}
+

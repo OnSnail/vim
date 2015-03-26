@@ -8,11 +8,12 @@ if [ $# -eq 1 ]; then
   fi
 fi
 
-cd ~/rizhiyi_manager
+cd /Users/wrb/goworkspace/src/yottabyte.cn/rizhiyi_manager
 bash ~/github/wuranbo/vim/ctags_rizhiyi_manager.sh
 vim --cmd "set path+=~/rizhiyi_manager" \
-  --cmd "set path+=~/goworkspace/" \
+  --cmd "set path+=~/goworkspace/src" \
   --cmd "autocmd BufNewFile,BufRead *.tpl set filetype=html" \
+  --cmd "autocmd BufNewFile,BufRead *.sample set filetype=dosini" \
   -c "nnoremap <silent> <F5>  :<C-u>Unite -smartcase -buffer-name=files -start-insert file_rec/git:/Users/wrb/yottabyte/src/rizhiyi_manager/:<CR>" \
   -c "nnoremap <F3>  :<C-u>Unite -smartcase -start-insert grep:/Users/wrb/yottabyte/src/rizhiyi_manager/server/:--go<CR>" \
   --cmd "autocmd VimLeavePre * :mksession!  ~/.vim_sessions/rizhiyi_manager" \

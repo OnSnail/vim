@@ -17,7 +17,7 @@ abbr        fmt.Printf("%v\n", v)
   ${0}
 
 snippet     errl
-abbr        errlog if err != nil { log.Fatal(err) }
+abbr        if err!=nil{log.Fatal(err)}
   if err != nil {
     ${1:log.Fatal(err)}
   }
@@ -33,3 +33,25 @@ alias       funci
 snippet     bug
 abbr        // BUG(wuranbo):
   // BUG(wu.ranbo):
+
+# defer recover
+snippet defr
+alias deferr
+	defer func() {
+		if err := recover(); err != nil {
+			${0}
+		}
+	}()
+# defer
+snippet df
+alias deferf
+abbr defer someFunction()
+	defer ${1:func}(${2})
+	${0}
+snippet def
+alias defer
+abbr defer func() { ... }
+	defer func() {
+		${0}
+	}()
+# defer recover

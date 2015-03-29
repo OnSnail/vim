@@ -13,15 +13,17 @@ abbr        todo
 
 snippet     pr
 abbr        fmt.Printf("%v\n", v)
-  fmt.Printf("${1:%v}\n"${2:, value})
-  ${0}
+  fmt.Printf("${1:%v}\n"${2:, value}) ${0}
+
+snippet     pl
+abbr        fmt.Println("")
+  fmt.Println("${1:saysome}") ${0}
 
 snippet     errl
 abbr        if err!=nil{log.Fatal(err)}
   if err != nil {
     ${1:log.Fatal(err)}
-  }
-  ${0}
+  } ${0}
 
 snippet     funcinit
 abbr        func init() {}
@@ -46,8 +48,7 @@ alias deferr
 snippet df
 alias deferf
 abbr defer someFunction()
-	defer ${1:func}(${2})
-	${0}
+	defer ${1:func}(${2}) ${0}
 snippet def
 alias defer
 abbr defer func() { ... }

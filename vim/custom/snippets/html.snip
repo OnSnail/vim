@@ -1,0 +1,7 @@
+snippet     locales
+abbr        i18n .Lang "some%d" arg
+  {{ i18n .Lang "${1:word}" ${2} }}
+
+snippet     xsrf
+abbr        {{ .xsrf_html }}
+  {{ .xsrf_html }} ${0}

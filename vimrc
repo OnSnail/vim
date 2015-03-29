@@ -285,9 +285,9 @@ set hidden
 set cursorline
 set cursorcolumn
 "不折行
-set nowrap
+"set nowrap
 "折行
-"set wrap
+set wrap
 
 "定义edit
 nnoremap <Leader>e :e
@@ -650,7 +650,7 @@ au FileType go nmap <Leader>gbr <Plug>(go-doc-browser)
 au FileType go nmap <Leader>gim <Plug>(go-implements)
 let g:go_fmt_command = "goimports"
 let g:go_fmt_autosave = 1
-"let g:go_auto_type_info = 1 #
+let g:go_auto_type_info = 1
 let g:go_fmt_fail_silently = 1 " for synstatic
 "======end vim-go======
 "

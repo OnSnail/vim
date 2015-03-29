@@ -148,7 +148,7 @@ alias jshint='jshint --verbose'
 # Felix Ding
 # Nov 18, 2014
 #
-function start_qujing {
-  export http_proxy='http://theironislands.f.getqujing.net:31149'
-  export HTTPS_PROXY='http://theironislands.f.getqujing.net:31149'
-}
+# function start_qujing {
+  # export http_proxy='http://theironislands.f.getqujing.net:31149'
+  # export HTTPS_PROXY='http://theironislands.f.getqujing.net:31149'
+# }

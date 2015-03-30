@@ -5,3 +5,21 @@ abbr        i18n .Lang "some%d" arg
 snippet     xsrf
 abbr        {{ .xsrf_html }}
   {{ .xsrf_html }} ${0}
+
+snippet     if
+abbr        {{if .U }} {{end}}
+  {{ if ${1:cond} }} ${2:cont}  {{end}}${0}
+
+snippet     ifelse
+abbr        {{if .U }} {{else}} {{end}}
+  {{ if ${1:cond} }} ${2:cont} {{else}} ${3:elsecont} {{end}}${0}
+
+snippet     load
+abbr        {{ .U }}
+  {{ ${1:cond} }}${0}
+
+snippet     urlfor
+abbr        {{ urlfor "ServiceController.Get"}
+  {{ urlfor "${1:ServiceController.Get}" }}
+
+

@@ -375,25 +375,27 @@ call unite#custom#source('tag', 'matchers', 'matcher_fuzzy')
 
 " no put grep,file_rec/git,file_rec/async which are used in vim_yotta*.sh, got bug:will ignore line which has
 " 'login'
-call unite#custom_source('file_rec,file_mru,file',
+call unite#custom_source('file_rec,file_mru,file,file_rec/git,grep',
       \ 'ignore_pattern', join([
       \ '\.git/',
       \ 'bootstrap/',
-      \ '.sass-cache',
+      \ '\.sass-cache',
       \ 'node_modules/',
       \ 'app/storage',
       \ '\.cache/',
       \ '\.atom/',
       \ '\.codeintel/',
       \ '\.gitignore',
-      \ '.*.swp',
+      \ '.*\.swp',
       \ 'tags',
       \ '\.arcconfig',
       \ '\.ropeproject/',
-      \ '.*.log',
-      \ '.*.gz',
-      \ '.*.tar',
-      \ '.*.tar.gz',
+      \ '.*\.log',
+      \ '.*\.bak',
+      \ '.*\.gz',
+      \ '.*\.tar',
+      \ '.*\.tar.gz',
+      \ 'Godeps/',
       \ ], '\|'))
 
 if executable('ag')
@@ -643,11 +645,15 @@ map <Leader>fl :NERDTreeToggle<CR>
 "let g:go_highlight_structs = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
-"au FileType go nmap <Leader>gim <Plug>(go-implements)
 au FileType go nmap <C-]> <Plug>(go-def-vertical)
 au FileType go nmap <Leader>grn <Plug>(go-rename)
 au FileType go nmap <Leader>gbr <Plug>(go-doc-browser)
 au FileType go nmap <Leader>gim <Plug>(go-implements)
+au FileType go nmap <Leader>gclr <Plug>(go-callers)
+au FileType go nmap <Leader>gcle <Plug>(go-callees)
+au FileType go nmap <Leader>gcls <Plug>(go-callstack)
+au FileType go nmap <Leader>gclg <Plug>(go-callgraph)
+let g:go_orcale_scope = "yottabyte.cn/rizhiyi_manager/server"
 let g:go_fmt_command = "goimports"
 let g:go_fmt_autosave = 1
 let g:go_auto_type_info = 1

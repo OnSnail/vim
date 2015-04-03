@@ -9,7 +9,7 @@ if [ $# -eq 1 ]; then
 fi
 
 cd ~/yottafrontend
-bash ~/github/wuranbo/vim/ctags_yottafrontend.sh
+bash ~/github/wuranbo/vim/scripts/ctags_yottafrontend.sh
 vim --cmd "set tags=~/yottafrontend/tags" \
   --cmd "set path+=~/yottafrontend" \
   -c "nnoremap <silent> <F5>  :<C-u>Unite -smartcase -buffer-name=files -start-insert file_rec/git:~/yottabyte/src/yotta_elasticsearch/frontend_refactor/src/<CR>" \

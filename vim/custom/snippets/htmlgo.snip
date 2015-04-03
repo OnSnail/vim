@@ -1,3 +1,5 @@
+# Includes html.snippets
+
 snippet     locales
 abbr        i18n .Lang "some%d" arg
   {{ i18n .Lang "${1:word}" ${2} }}
@@ -22,4 +24,10 @@ snippet     urlfor
 abbr        {{ urlfor "ServiceController.Get"}
   {{ urlfor "${1:ServiceController.Get}" }}
 
+snippet     range
+abbr        {{ range $k, $v := hash }} {{end}}
+options     head
+  {{ range $${2:k}, $${3:v} :=  ${1} }}
+    ${4:cont}
+  {{end}}
 

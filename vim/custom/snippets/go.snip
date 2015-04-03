@@ -44,15 +44,23 @@ alias deferr
 			${0}
 		}
 	}()
+
 # defer
 snippet df
 alias deferf
 abbr defer someFunction()
 	defer ${1:func}(${2}) ${0}
+
 snippet def
-alias defer
 abbr defer func() { ... }
+alias defer
 	defer func() {
 		${0}
 	}()
 # defer recover
+
+snippet     this.d
+abbr        this.Data[""]=
+alias       data
+  this.Data["${1}"] = ${2}
+

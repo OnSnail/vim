@@ -9,7 +9,7 @@ if [ $# -eq 1 ]; then
 fi
 
 cd ~/yottaapi
-bash ~/github/wuranbo/vim/ctags_yottaapi.sh
+bash ~/github/wuranbo/vim/scripts/ctags_yottaapi.sh
 vim -c "set tags=~/yottaapi/tags" \
   -c "set path+=~/yottaapi" \
   -c "nnoremap <silent> <F5>  :<C-u>Unite -smartcase -buffer-name=files -start-insert file_rec/git:/Users/wrb/yottabyte/src/yottaapi/:<CR>" \

@@ -16,6 +16,10 @@ abbr        CREATE TRIGGER trigger_name UPDATE/DELETE OF col ON table
 
 snippet     DROP_TRIGGER
 abbr        DROP TRIGGER IF EXISTS
-  DROP TRIGGER IF EXISTS ${1:name}
+  DROP TRIGGER IF EXISTS \`${1:name}\`
   ${0}
 
+snippet     DROP_INDEX
+abbr        DROP INDEX IF EXISTS
+  DROP INDEX IF EXISTS ${1:name}
+  ${0}

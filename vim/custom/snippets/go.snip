@@ -68,3 +68,8 @@ abbr        this.Data[""]=
 alias       data
   this.Data["${1}"] = ${2}
 
+snippet message
+alias newmessage
+abbr MESSAGE="|!-SEP|SOMEMESSAGE|!-SEP|"
+  %uc($1) string = "|!-$SEPERATOR|%uc($1)|!-$SEPERATOR|"
+  %uc($1): "${1:name}"

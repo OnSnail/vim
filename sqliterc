@@ -1,2 +1,6 @@
 .mode column
 .headers on
+.mode column user
+.mode line toml
+.mode line tmpl
+.mode line conf

@@ -7,6 +7,10 @@ options head
   // `strftime("%Y/%m/%d")`
   ${0}
 
+snippet     filegit
+abbr        filefullname relative git `substitute(system('git rev-parse --show-prefix'), '\n', '', '')``expand('%:t')`
+  `substitute(system('git rev-parse --show-prefix'), '\n', '', '')``expand('%:t')`
+
 snippet     todo
 abbr        todo
   // TODO(wu.ranbo@yottabyte.cn) ${0}

@@ -3,4 +3,7 @@
 .mode line toml
 .mode line tmpl
 .mode line conf
-.mode column
+.mode column confmeta
+.mode column module
+.mode column host
+.mode column instance

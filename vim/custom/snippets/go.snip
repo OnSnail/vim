@@ -74,3 +74,35 @@ abbr MESSAGE="|!-SEP|SOMEMESSAGE|!-SEP|"
   %uc($1) string = "|!-$SEPERATOR|%uc($1)|!-$SEPERATOR|"
   %uc($1): "${1:name}"
   $1 = ${2:zhCN trans}
+
+snippet errn
+abbr if err != nil {return err}
+  if err != nil {
+    log.Error("${1} failed!:", err)
+    return ${2}err
+  }${0}
+
+snippet rollback
+abbr if err := o.Rollback(); err != nil { return err}
+  if err := o.Rollback(); err != nil {
+    log.Alert("${1} failed! transaction rollback exception:", err)
+    return ${2}err
+  }${0}
+
+snippet begin
+abbr if err := o.Begin(); err != nil { return err}
+  if err := o.Begin(); err != nil {
+    log.Alert("${1} failed! start transaction exception:", err)
+    return ${2}err
+  }${0}
+
+snippet commit
+abbr if err := o.Commit(); err != nil { return err}
+  if err := o.Commit(); err != nil {
+    log.Alert("${1} failed! commit transaction exception:", err)
+    return ${2}err
+  }${0}
+
+snippet loge
+abbr log.Error("", err)
+  log.Error("${1} failed! when ${2} with error:", err)${0}

@@ -1,4 +1,4 @@
-export GOPATH=`godep path`:$HOME/goworkspace
+export GOPATH=$HOME/goworkspace
 export GO_INSTALL_HOME=/usr/local/go
 export GO_ROOT=/usr/local/go
 export SCALA_HOME=/usr/local/share/scala

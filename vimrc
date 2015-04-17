@@ -631,8 +631,8 @@ let g:syntastic_mode_map={ 'mode': 'active',
 let g:syntastic_javascript_checkers = ['jshint']
 let g:syntastic_javascript_jshint_args = "--verbose"
 let g:syntastic_scala_checkers = ['fsc', 'scalastyle']
-let g:syntastic_scala_scalastyle_jar = '~/github/wuranbo/vim/scalastyle_2.10-0.6.0-batch.jar'
-let g:syntastic_scala_scalastyle_config_file = '~/github/wuranbo/vim/scalastyle_config.xml'
+let g:syntastic_scala_scalastyle_jar = '~/github/wuranbo/vim/thirdparty/scalastyle_2.10-0.6.0-batch.jar'
+let g:syntastic_scala_scalastyle_config_file = '~/github/wuranbo/vim/thirdparty/scalastyle_config.xml'
 "=======end syntastic=====
 "
 "=======nerdtree======
@@ -640,9 +640,9 @@ map <Leader>fl :NERDTreeToggle<CR>
 "=======end nerdtree======
 "
 "======vim-go======
-"let g:go_highlight_functions = 1
-"let g:go_highlight_methods = 1
-"let g:go_highlight_structs = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
 au FileType go nmap <C-]> <Plug>(go-def-vertical)

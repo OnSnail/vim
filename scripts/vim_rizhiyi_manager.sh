@@ -17,7 +17,7 @@ vim --cmd "set path+=~/goworkspace/src/yottabyte.cn/rizhiyi_manager" \
   --cmd "autocmd BufNewFile,BufRead *.sample set filetype=dosini" \
   -c "nnoremap <silent> <F5>  :<C-u>Unite -smartcase -buffer-name=files -start-insert file_rec/git:/Users/wrb/goworkspace/src/yottabyte.cn/rizhiyi_manager:<CR>" \
   -c "au FileType go nnoremap <buffer> <F3>  :<C-u>Unite -smartcase -start-insert grep:/Users/wrb/goworkspace/src/yottabyte.cn/rizhiyi_manager:--go<CR>" \
-  -c "au FileType htmlgo nnoremap <buffer> <F3>  :<C-u>Unite -smartcase -start-insert grep:/Users/wrb/goworkspace/src/yottabyte.cn/rizhiyi_manager/server/views:--html<CR>" \
+  -c "au FileType htmlgo.html nnoremap <buffer> <F3>  :<C-u>Unite -smartcase -start-insert grep:/Users/wrb/goworkspace/src/yottabyte.cn/rizhiyi_manager/server/views:--html<CR>" \
   -c "au FileType scss nnoremap <buffer> <F3>  :<C-u>Unite -smartcase -start-insert grep:/Users/wrb/goworkspace/src/yottabyte.cn/rizhiyi_manager/server/sass:--sass<CR>" \
   -c "au FileType javascript nnoremap <buffer> <F3>  :<C-u>Unite -smartcase -start-insert grep:/Users/wrb/goworkspace/src/yottabyte.cn/rizhiyi_manager/server/js:--js<CR>" \
   --cmd "autocmd VimLeavePre * :mksession!  ~/.vim_sessions/rizhiyi_manager" \

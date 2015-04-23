@@ -1,0 +1,26 @@
+[color]
+  branch = auto
+  diff = auto
+  status = auto
+[color "branch"]
+  current = yellow reverse
+  local = yellow
+  remote = green
+[color "diff"]
+  meta = yellow bold
+  frag = magenta bold
+  old = red
+  new = cyan
+[color "status"]
+  added = yellow
+  changed = green
+  untracked = cyan
+[push]
+	default = simple
+[user]
+	name = wuranbo
+	email = wuranbo@gmail.com
+[http]
+	postBuffer = 524288000
+[core]
+  pager = "less -x1,3"

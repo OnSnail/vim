@@ -390,7 +390,7 @@ call unite#custom_source('file_rec,file_mru,file,file_rec/git,grep',
       \ 'tags',
       \ '\.arcconfig',
       \ '\.ropeproject/',
-      \ '.*\.log',
+      \ '/.*\.log',
       \ '.*\.bak',
       \ '.*\.gz',
       \ '.*\.tar',
@@ -624,7 +624,7 @@ let g:syntastic_enable_signs=1
 " let g:syntastic_quiet_messages = { "type": "style" }
 let g:syntastic_error_symbol = '✗'
 let g:syntastic_warning_symbol = '⚠'
-" go python already working with vim-go and python-mode
+" python already working with python-mode, vim-go also but not good enough
 let g:syntastic_mode_map={ 'mode': 'active',
       \ 'active_filetypes': ['javascript', 'scala', 'go'],
       \ 'passive_filetypes': ['slim', 'haml', 'scss', 'css', 'html', 'less'] }

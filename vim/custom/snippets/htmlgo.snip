@@ -35,3 +35,8 @@ snippet index
 abbr {{ index 1 2 }}
   {{ index ${1:1} ${2:2} }}
 
+snippet     tmpl
+abbr        {{ template "" dict "root" $ "" }}
+alias template
+  {{ template "${1}" dict "root" $ "${2}" ${3} ${0} }}
+

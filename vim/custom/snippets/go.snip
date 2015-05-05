@@ -84,27 +84,53 @@ abbr if err != nil {return err}
 snippet logen
 abbr if err != nil {return err}
   if err != nil {
-    return ${3}log.Error("${1} failed! when ${2} with error:", err)
+    return ${3}log.Error("${1} failed!",
+    " when ${2} with error:", err)
   }${0}
 
-snippet rollback
-abbr if err := o.Rollback(); err != nil { return err}
-  if err := o.Rollback(); err != nil {
-    return ${2}log.Emergency("${1} failed! transaction rollback exception:", err)
-  }${0}
 
-snippet begin
+snippet begindefer
 abbr if err := o.Begin(); err != nil { return err}
-  if err := o.Begin(); err != nil {
-    return ${2}log.Emergency("${1} failed! start transaction exception:", err)
-  }${0}
-
-snippet commit
-abbr if err := o.Commit(); err != nil { return err}
-  if err := o.Commit(); err != nil {
-    return ${2}log.Emergency("${1} failed! commit transaction exception:", err)
-  }${0}
+  o := orm.NewOrm()
+  if err = o.Begin(); err != nil {
+    return ${2}log.TransactionError()
+  }
+  defer func() {
+    if err == utils.TransactionError {
+      return
+    }
+    if err != nil {
+      if err = o.Rollback(); err != nil {
+        err = log.TransactionError()
+      }
+    } else {
+      if err = o.Commit(); err != nil {
+        err = log.TransactionError()
+      }
+    }
+  }()
+  ${0}
 
 snippet loge
 abbr log.Error("", err)
-  log.Error("${1} failed! when ${2} with error:", err)${0}
+  log.Error("${1} failed!", err)${0}
+
+
+snippet     deftrans
+abbr        defer func(){ TransactionError }
+options     head
+  defer func() {
+    if err == utils.TransactionError {
+      return
+    }
+    if err != nil {
+      if err = o.Rollback(); err != nil {
+        err = log.TransactionError()
+      }
+    } else {
+      if err = o.Commit(); err != nil {
+        err = log.TransactionError()
+      }
+    }
+  }()
+

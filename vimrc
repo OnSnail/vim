@@ -660,8 +660,9 @@ let g:go_auto_type_info = 1
 let g:go_fmt_fail_silently = 1 " for synstatic
 "======end vim-go======
 "
-"======vim-javascripts====
-"let b:javascript_fold=0
+"======http://www.vim.org/scripts/script.php?script_id=102=======
+"======DirDiff====
+let g:DirDiffIgnoreCase = 0
 
 " tips
 " 1. '&' can use to repeat the last :%s

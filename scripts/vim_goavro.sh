@@ -14,7 +14,8 @@ vim --cmd "set path+=~/goworkspace/src/github.com/wuranbo/goavro" \
   --cmd "autocmd BufNewFile,BufRead *.tpl set filetype=html" \
   --cmd "autocmd BufNewFile,BufRead *.sample set filetype=dosini" \
   -c "nnoremap <silent> <F5>  :<C-u>Unite -smartcase -buffer-name=files -start-insert file_rec/git:/Users/wrb/github/wuranbo/goavro/:<CR>" \
-  -c "nnoremap <F3>  :<C-u>Unite -smartcase -start-insert grep:/Users/wrb/github/wuranbo/goavro/:--go<CR>" \
+  -c "au FileType go nnoremap <buffer> <F3> :<C-u>Unite -smartcase -start-insert grep:/Users/wrb/github/wuranbo/goavro/:--go<CR>" \
+  -c "au FileType python nnoremap <buffer> <F3> :<C-u>Unite -smartcase -start-insert grep:/Users/wrb/github/wuranbo/goavro/:--python<CR>" \
   --cmd "autocmd VimLeavePre * :mksession!  ~/.vim_sessions/goavro" \
   --cmd "autocmd VimLeavePre * :wviminfo ~/.vim_viminfos/goavro" \
   --cmd "autocmd VimEnter * :rviminfo ~/.vim_viminfos/goavro" \

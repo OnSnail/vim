@@ -440,7 +440,11 @@ let g:unite_source_tag_max_fname_length = 83
 
 "==========python-mode=====
 " Override go-to.definition key shortcut to Ctrl-]
-
+"
+" !!!!!!disable check warning!!!!!
+" .vim/bundle/python-mode/pymode/libs/pylama/lint/pylama_pylint/pylint.rc
+" change it
+"
 " use custom map
 let g:pymode_rope_goto_definition_bind = "<C-]>"
 let g:pymode_rope_goto_definition_cmd = "vsplit"

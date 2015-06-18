@@ -134,12 +134,17 @@ alias 70='ssh root@192.168.1.70'
 alias 72='ssh root@192.168.1.72'
 alias 22='ssh root@192.168.1.22'
 alias 23='ssh root@192.168.1.23'
+alias 26='ssh root@192.168.1.26'
 alias 32='ssh root@192.168.1.32'
 alias 27='ssh root@192.168.1.27'
 alias 91='ssh root@192.168.1.91'
 alias 29='ssh root@192.168.1.29'
 alias 64='ssh root@192.168.1.64'
 alias 58='ssh root@192.168.1.58'
+alias 21='ssh root@192.168.1.21'
+alias 20='ssh root@192.168.1.20'
+alias 10='ssh root@192.168.1.10'
+alias 66='ssh root@192.168.1.66'
 alias maichuang92='ssh -p36899 rd@211.157.169.92'
 alias skjkj='ssh root@182.92.1.108'
 alias ctags='ctags --links=no'
@@ -154,3 +159,8 @@ alias jshint='jshint --verbose'
   # export http_proxy='http://theironislands.f.getqujing.net:31149'
   # export HTTPS_PROXY='http://theironislands.f.getqujing.net:31149'
 # }
+
+# Setting PATH for Python 3.4
+# The orginal version is saved in .bash_profile.pysave
+PATH="/Library/Frameworks/Python.framework/Versions/3.4/bin:${PATH}"
+export PATH

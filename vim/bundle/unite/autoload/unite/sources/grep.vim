@@ -285,8 +285,10 @@ function! s:source.async_gather_candidates(args, context) "{{{
       let text = join(candidate[1][2:], ':')
     endif
 
+    let _gitpath = substitute(system('git rev-parse --show-toplevel'), '\n', '','')
+    let _showpath = substitute(path, _gitpath, '','')
     call add(_, {
-          \ 'word' : printf('%s: %s: %s', path, line, text),
+          \ 'word' : printf('%s: %s: %s', _showpath, line, text),
           \ 'source__info' : [path, line, text]
           \ })
   endfor

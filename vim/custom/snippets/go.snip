@@ -44,7 +44,7 @@ abbr        // BUG(wuranbo):
 snippet defr
 alias deferr
 	defer func() {
-		if err := recover(); err != nil {
+		if r := recover(); r != nil {
 			${0}
 		}
 	}()
@@ -96,7 +96,7 @@ abbr if err := o.Begin(); err != nil { return err}
     return ${2}log.TransactionError()
   }
   defer func() {
-    if err == utils.TransactionError {
+    if err == db.TransactionError {
       return
     }
     if err != nil {
@@ -120,7 +120,7 @@ snippet     deftrans
 abbr        defer func(){ TransactionError }
 options     head
   defer func() {
-    if err == utils.TransactionError {
+    if err == db.TransactionError {
       return
     }
     if err != nil {

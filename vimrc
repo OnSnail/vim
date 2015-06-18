@@ -30,6 +30,10 @@ set nocompatible
 
 " 取消所有代码折叠
 set nofoldenable
+" json可以用syntax作fold。
+" 快捷键zA,za(toggle all or one level),
+" zO,zo(open),zC,zc(close)
+"set foldmethod=syntax
 
 "@note:solarized see the commit under ranbo about colorscheme and terminal
 "== start scheme solarized
@@ -252,7 +256,7 @@ function! DoPrettyXML()
   exe "set ft=" . l:origft
 endfunction
 command! PrettyXML call DoPrettyXML()
-command! PrettyJSON :% !python -m json.tool
+command! PrettyJSON call JsBeautify()
 "==json==%!python -m json.tool
 "===== curosor operate in the QUICKFIX, the location-list 要用nnoremap
 nnoremap <Leader>cn :cn<CR>
@@ -394,8 +398,10 @@ call unite#custom_source('file_rec,file_mru,file,file_rec/git,grep',
       \ '.*\.bak',
       \ '.*\.gz',
       \ '.*\.tar',
-      \ '.*\.tar.gz',
-      \ 'Godeps/',
+      \ '.*\.tar\.gz',
+      \ '^/Users/wrb/goworkspace/src/yottabyte.cn/rizhiyi_manager/Godeps/_workspace/src/',
+      \ '^Godeps/_workspace/src/',
+      \ '^/Godeps/_workspace/src/',
       \ ], '\|'))
 
 if executable('ag')
@@ -440,23 +446,24 @@ let g:unite_source_tag_max_fname_length = 83
 
 "==========python-mode=====
 " Override go-to.definition key shortcut to Ctrl-]
-"
-" !!!!!!disable check warning!!!!!
-" .vim/bundle/python-mode/pymode/libs/pylama/lint/pylama_pylint/pylint.rc
-" change it
-"
 " use custom map
 let g:pymode_rope_goto_definition_bind = "<C-]>"
 let g:pymode_rope_goto_definition_cmd = "vsplit"
-let g:pymode_rope_lookup_project = 1
-" lint
+"
 let g:pymode_options_max_line_length = 80
 let g:pymode_lint_options_pep8 = {'max_line_length': 120}
 let g:pymode_lint_options_pylint = {'max-line-length': 120}
+let g:pymode_lint_ignore = "E101,E302,E301,E701,E111"
+" no nesseary: .vim/bundle/python-mode/pymode/libs/pylama/lint/pylama_pylint/pylint.rc
+" no nesseary: ~/pylama.ini
 
+let g:pymode_rope_lookup_project = 1
+"let g:pymode_rope_lookup_project = 0
+" lint
 let g:pymode_rope_completion = 1
 let g:pymode_rope_complete_on_dot = 1
 let g:pymode_rope_autoimport = 1
+"let g:pymode_rope_autoimport = 0
 let g:pymode_rope_autoimport_modules = ['os', 'datetime']
 let g:pymode_rope_autoimport_import_after_complete = 0
 "===end python-mode

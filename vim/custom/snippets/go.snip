@@ -23,6 +23,12 @@ snippet     pl
 abbr        fmt.Println("")
   fmt.Println("${1:saysome}"${2:, other}) ${0}
 
+snippet iferr
+abbr        if err = {}; err != nil { }
+  if err = ${1}; err != nil {
+    return log.Error(err)
+  }
+
 snippet     errl
 abbr        if err!=nil{log.Fatal(err)}
   if err != nil {
@@ -91,24 +97,32 @@ abbr if err != nil {return err}
 
 snippet begindefer
 abbr if err := o.Begin(); err != nil { return err}
-  o := orm.NewOrm()
-  if err = o.Begin(); err != nil {
-    return ${2}log.TransactionError()
-  }
-  defer func() {
-    if err == db.TransactionError {
-      return
-    }
-    if err != nil {
-      if err = o.Rollback(); err != nil {
-        err = log.TransactionError()
-      }
-    } else {
-      if err = o.Commit(); err != nil {
-        err = log.TransactionError()
-      }
-    }
-  }()
+	if err = o.Begin(); err != nil {
+		return ${1}log.TransactionError()
+	}
+	defer func() {
+		if err == db.ErrTransaction {
+			return
+		}
+		if r := recover(); r != nil {
+      o.Rollback()
+			if _, ok := r.(runtime.Error); ok {
+				log.Stack(r.(runtime.Error))
+        return
+			}
+      panic(r)
+		}
+		if err != nil {
+      log.Error(err)
+			if err = o.Rollback(); err != nil {
+				err = log.TransactionError()
+			}
+		} else {
+			if err = o.Commit(); err != nil {
+				err = log.TransactionError()
+			}
+		}
+	}()
   ${0}
 
 snippet loge

@@ -7,5 +7,6 @@
 .mode column module
 .mode column host
 .mode column instance
+.width auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto
 PRAGMA foreign_keys = ON;
 PRAGMA encoding = utf8;

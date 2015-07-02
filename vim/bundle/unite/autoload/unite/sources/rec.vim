@@ -383,7 +383,9 @@ function! s:source_file_git.gather_candidates(args, context) "{{{
     return []
   endif
 
-  let a:context.source__directory = s:get_path(a:args, a:context)
+  let _gitpath = substitute(system('git rev-parse --show-toplevel'), '\n', '','')
+  let a:context.source__directory = _gitpath
+  " let a:context.source__directory = s:get_path(a:args, a:context)
         "\ unite#util#substitute_path_separator(getcwd())
   let directory = a:context.source__directory
   if finddir('.git', ';') == ''

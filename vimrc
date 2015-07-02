@@ -398,6 +398,7 @@ call unite#custom_source('file_rec,file_mru,file,file_rec/git,grep',
       \ '.*\.bak',
       \ '.*\.gz',
       \ '.*\.tar',
+      \ '.*\.jar',
       \ '.*\.tar\.gz',
       \ '^/Users/wrb/goworkspace/src/yottabyte.cn/rizhiyi_manager/Godeps/_workspace/src/',
       \ '^Godeps/_workspace/src/',
@@ -480,6 +481,7 @@ let g:neocomplete#enable_at_startup = 1
 let g:echodoc_enable_at_startup = 1
 " Use smartcase.
 let g:neocomplete#enable_smart_case = 1
+let g:neocomplete#enable_fuzzy_completion = 1
 " Set minimum syntax keyword length.
 let g:neocomplete#sources#syntax#min_keyword_length = 1
 let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
@@ -650,11 +652,12 @@ let g:syntastic_scala_scalastyle_config_file = '~/github/wuranbo/vim/thirdparty/
 map <Leader>fl :NERDTreeToggle<CR>
 "=======end nerdtree======
 "
-"======vim-go======
-let g:go_highlight_functions = 1
+"======vim-go=====
+let g:go_highlight_extra_types = 1
+let g:go_highlight_operators = 1
 let g:go_highlight_methods = 1
 let g:go_highlight_structs = 1
-let g:go_highlight_operators = 1
+let g:go_highlight_functions = 1
 let g:go_highlight_build_constraints = 1
 au FileType go nmap <C-]> <Plug>(go-def-vertical)
 au FileType go nmap <Leader>grn <Plug>(go-rename)
@@ -674,6 +677,9 @@ let g:go_fmt_fail_silently = 1 " for synstatic
 "======http://www.vim.org/scripts/script.php?script_id=102=======
 "======DirDiff====
 let g:DirDiffIgnoreCase = 0
+"======FileDiff====
+":vertical diffsplit
+":difthis  "比较已经打开的两个buf
 
 " tips
 " 1. '&' can use to repeat the last :%s

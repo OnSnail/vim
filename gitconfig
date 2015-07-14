@@ -20,7 +20,12 @@
 [user]
 	name = wuranbo
 	email = wuranbo@gmail.com
+  logallrefupdates=true
 [http]
 	postBuffer = 524288000
 [core]
   pager = "less -x1,3"
+[diff]
+  tool = vimdiff
+[difftool]
+  prompt = false

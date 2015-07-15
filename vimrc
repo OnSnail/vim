@@ -401,8 +401,9 @@ call unite#custom_source('file_rec,file_mru,file,file_rec/git,grep',
       \ '.*\.jar',
       \ '.*\.tar\.gz',
       \ '^/Users/wrb/goworkspace/src/yottabyte.cn/rizhiyi_manager/Godeps/_workspace/src/',
-      \ '^Godeps/_workspace/src/',
-      \ '^/Godeps/_workspace/src/',
+      \ '^/Users/wrb/yottabyte/src/rizhiyi_manager_agent/rizhiyi/java/',
+      \ '^/Users/wrb/yottabyte/src/rizhiyi_manager_agent/rizhiyi/license/',
+      \ '^/Users/wrb/yottabyte/src/rizhiyi_manager_agent/rizhiyi_manager_agent/python',
       \ ], '\|'))
 
 if executable('ag')
@@ -454,7 +455,7 @@ let g:pymode_rope_goto_definition_cmd = "vsplit"
 let g:pymode_options_max_line_length = 80
 let g:pymode_lint_options_pep8 = {'max_line_length': 120}
 let g:pymode_lint_options_pylint = {'max-line-length': 120}
-let g:pymode_lint_ignore = "E101,E302,E301,E701,E111"
+let g:pymode_lint_ignore = "E101,E302,E301,E701,E111,E114,E501"
 " no nesseary: .vim/bundle/python-mode/pymode/libs/pylama/lint/pylama_pylint/pylint.rc
 " no nesseary: ~/pylama.ini
 
@@ -685,3 +686,5 @@ let g:DirDiffIgnoreCase = 0
 " 1. '&' can use to repeat the last :%s
 " 2. <C-a> on a number make it increase
 " 3. zA, za 两个命令flod和unflod当前
+"
+"syntax off

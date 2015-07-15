@@ -83,9 +83,9 @@ function! s:parse_ignore_file(file, prefix) "{{{
   for line in filter(readfile(a:file),
         \ "v:val !~ '^\\s*$\\|\\s*syntax:\\|\\s*#'")
     if line[0] == '!'
-      call add(whites, line[1:])
+      call add(whites, prefix . line[1:])
     else
-      call add(patterns, line)
+      call add(patterns, prefix . line)
     endif
   endfor
 

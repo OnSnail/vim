@@ -1,5 +1,5 @@
 "=============================================================================
-" FILE: bookmark.vim
+" FILE: file_list.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
@@ -26,55 +26,40 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-if exists('g:loaded_unite_source_bookmark')
-      \ || ($SUDO_USER != '' && $USER !=# $SUDO_USER
-      \     && $HOME !=# expand('~'.$USER)
-      \     && $HOME ==# expand('~'.$SUDO_USER))
-  finish
-endif
-
-command! -nargs=? -complete=file UniteBookmarkAdd
-      \ call unite#sources#bookmark#_append(<q-args>)
-
-" Add custom action table. "{{{
-let s:file_bookmark_action = {
-      \ 'description' : 'append files to bookmark list',
-      \ }
-function! s:file_bookmark_action.func(candidate) "{{{
-  " Add to bookmark.
-  call unite#sources#bookmark#_append(a:candidate.action__path)
-endfunction"}}}
-
-let s:buffer_bookmark_action = {
-      \ 'description' : 'append buffers to bookmark list',
-      \ }
-function! s:buffer_bookmark_action.func(candidate) "{{{
-  let filetype = getbufvar(
-        \ a:candidate.action__buffer_nr, '&filetype')
-  if filetype ==# 'vimfiler'
-    let filename = getbufvar(
-          \ a:candidate.action__buffer_nr, 'vimfiler').current_dir
-  elseif filetype ==# 'vimshell'
-    let filename = getbufvar(
-          \ a:candidate.action__buffer_nr, 'vimshell').current_dir
-  else
-    let filename = a:candidate.action__path
-  endif
-
-  " Add to bookmark.
-  call unite#sources#bookmark#_append(filename)
-endfunction"}}}
-
-call unite#custom#action('file', 'bookmark', s:file_bookmark_action)
-call unite#custom#action('buffer', 'bookmark', s:buffer_bookmark_action)
-unlet! s:file_bookmark_action
-unlet! s:buffer_bookmark_action
+" Variables  "{{{
 "}}}
 
-let g:loaded_unite_source_bookmark = 1
+function! unite#sources#file_list#define() "{{{
+  return s:source
+endfunction"}}}
+
+let s:source = {
+      \ 'name' : 'file_list',
+      \ 'description' : 'candidates from filelist',
+      \ 'default_kind' : 'file',
+      \ }
+
+function! s:source.complete(args, context, arglead, cmdline, cursorpos) "{{{
+  return unite#sources#file#complete_file(
+        \ a:args, a:context, a:arglead, a:cmdline, a:cursorpos)
+endfunction"}}}
+
+function! s:source.gather_candidates(args, context) "{{{
+  let args = unite#helper#parse_source_args(a:args)
+
+  if empty(args)
+    call unite#print_source_error(
+          \ 'filelist path is needed.', s:source.name)
+    return []
+  endif
+
+  return map(readfile(args[0]), "{
+        \ 'word' : v:val,
+        \ 'action__path' : v:val,
+        \}")
+endfunction "}}}
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
 
-" __END__
 " vim: foldmethod=marker

@@ -41,7 +41,7 @@ function! unite#kinds#jump_list#define() "{{{
         \ 'default_action' : 'open',
         \ 'action_table': {},
         \ 'alias_table' : { 'rename' : 'replace' },
-        \ 'parents': ['openable'],
+        \ 'parents': ['common', 'openable'],
         \}
 
   " Actions "{{{
@@ -283,7 +283,7 @@ function! s:open(candidate) "{{{
       silent execute 'keepjumps buffer' bufnr
     else
       call unite#util#smart_execute_command(
-            \ 'keepjumps edit!', unite#util#substitute_path_separator(
+            \ 'keepjumps edit!', unite#util#expand(
             \   fnamemodify(a:candidate.action__path, ':~:.')))
       let bufnr = bufnr('%')
     endif

@@ -1,6 +1,7 @@
 export GOPATH=$HOME/goworkspace
 export GO_INSTALL_HOME=/usr/local/go
 export GO_ROOT=/usr/local/go
+export GOROOT=$GO_ROOT
 export SCALA_HOME=/usr/local/share/scala
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_65.jdk/Contents/Home
 #这里很奇怪

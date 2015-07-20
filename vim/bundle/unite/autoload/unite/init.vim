@@ -27,11 +27,21 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " Global options definition. "{{{
+let g:unite_force_overwrite_statusline =
+      \ get(g:, 'unite_force_overwrite_statusline', 1)
 let g:unite_ignore_source_files =
       \ get(g:, 'unite_ignore_source_files', [])
+let g:unite_quick_match_table =
+      \ get(g:, 'unite_quick_match_table', {
+      \     'a' : 0, 's' : 1, 'd' : 2, 'f' : 3, 'g' : 4, 'h' : 5, 'j' : 6, 'k' : 7, 'l' : 8, ';' : 9,
+      \     'q' : 10, 'w' : 11, 'e' : 12, 'r' : 13, 't' : 14, 'y' : 15, 'u' : 16, 'i' : 17, 'o' : 18, 'p' : 19,
+      \     '1' : 20, '2' : 21, '3' : 22, '4' : 23, '5' : 24, '6' : 25, '7' : 26, '8' : 27, '9' : 28, '0' : 29,
+      \ })
 let g:unite_redraw_hold_candidates =
       \ get(g:, 'unite_redraw_hold_candidates',
       \     (unite#util#has_lua() ? 20000 : 10000))
+let g:unite_enable_auto_select =
+      \ get(g:, 'unite_enable_auto_select', 1)
 "}}}
 
 function! unite#init#_context(context, ...) "{{{
@@ -46,6 +56,10 @@ function! unite#init#_context(context, ...) "{{{
           \ 'source/' . source_names[0], 'context'))
   endif
 
+  if get(a:context, 'script', 0)
+    " Set profile-name automatically.
+    let a:context.profile_name = 'script/' . join(source_names, ':')
+  endif
   let profile_name = get(a:context, 'profile_name',
         \    get(a:context, 'buffer_name', 'default'))
   if profile_name !=# 'default'
@@ -86,19 +100,12 @@ function! unite#init#_context(context, ...) "{{{
   if context.here
     " Set direction.
     let context.horizontal = 1
-    let context.direction = 'belowright'
+    let context.direction = 'botright'
   endif
   if (!&l:hidden && &l:modified)
         \ || (&l:hidden && &l:bufhidden =~# 'unload\|delete\|wipe')
     " Split automatically.
     let context.split = 1
-  endif
-  if !has_key(a:context, 'buffer_name') && context.script
-    " Set buffer-name automatically.
-    let context.buffer_name = join(source_names)
-  endif
-  if context.auto_preview && !context.unite__is_restart
-    let context.winheight -= &previewheight
   endif
   if context.prompt_direction == ''
     let context.prompt_direction =
@@ -284,7 +291,9 @@ function! unite#init#_current_unite(sources, context) "{{{
   let unite.profile_name =
         \ (context.profile_name != '') ? context.profile_name :
         \ unite.buffer_name
-  let unite.prev_bufnr = bufnr('%')
+  let unite.prev_bufnr =
+        \ (exists('b:unite') && !context.split) ?
+        \ b:unite.prev_bufnr : bufnr('%')
   let unite.prev_winnr = winnr()
   let unite.prev_line = 0
   let unite.update_time_save = &updatetime
@@ -312,8 +321,12 @@ function! unite#init#_current_unite(sources, context) "{{{
   let unite.access_time = localtime()
   let unite.is_finalized = 0
   let unite.previewed_buffer_list = []
-  let unite.post_filters = unite#util#convert2list(
-        \ unite#custom#get_profile(unite.profile_name, 'filters'))
+  let unite.current_matchers = unite#util#convert2list(
+        \ unite#custom#get_profile(unite.profile_name, 'matchers'))
+  let unite.current_sorters = unite#util#convert2list(
+        \ unite#custom#get_profile(unite.profile_name, 'converters'))
+  let unite.current_converters = unite#util#convert2list(
+        \ unite#custom#get_profile(unite.profile_name, 'converters'))
   let unite.preview_candidate = {}
   let unite.highlight_candidate = {}
   let unite.max_source_name = 0
@@ -341,6 +354,8 @@ function! unite#init#_current_unite(sources, context) "{{{
 
   " Preview windows check.
   let unite.has_preview_window =
+        \ exists('b:unite') ?
+        \ b:unite.has_preview_window :
         \ len(filter(range(1, winnr('$')),
         \  'getwinvar(v:val, "&previewwindow")')) > 0
 
@@ -646,7 +661,6 @@ function! unite#init#_sources(...) "{{{
         \ 'is_listed' : 1,
         \ 'is_forced' : 0,
         \ 'is_grouped' : 0,
-        \ 'required_pattern_length' : 0,
         \ 'action_table' : {},
         \ 'default_action' : {},
         \ 'default_kind' : 'common',
@@ -759,6 +773,9 @@ function! unite#init#_sources(...) "{{{
             \    get(source, 'white_globs', [])))
       let source.syntax = get(custom_source, 'syntax',
             \    get(source, 'syntax', ''))
+      let source.required_pattern_length =
+            \ get(custom_source, 'required_pattern_length',
+            \    get(source, 'required_pattern_length', 0))
 
       let source.unite__len_candidates = 0
       let source.unite__orig_len_candidates = 0

@@ -32,7 +32,6 @@ call unite#util#set_default(
       \ 'g:unite_source_grep_default_opts', '-inH')
 
 call unite#util#set_default('g:unite_source_grep_recursive_opt', '-r')
-call unite#util#set_default('g:unite_source_grep_max_candidates', 100)
 call unite#util#set_default('g:unite_source_grep_search_word_highlight', 'Search')
 call unite#util#set_default('g:unite_source_grep_encoding', 'char')
 "}}}
@@ -43,7 +42,7 @@ endfunction "}}}
 
 let s:source = {
       \ 'name': 'grep',
-      \ 'max_candidates': g:unite_source_grep_max_candidates,
+      \ 'max_candidates': 100,
       \ 'hooks' : {},
       \ 'syntax' : 'uniteSource__Grep',
       \ 'matchers' : 'matcher_regexp',
@@ -63,55 +62,39 @@ function! s:source.hooks.on_init(args, context) "{{{
     return
   endif
 
-  let target = ''
-  if type(get(a:args, 0, '')) == type([])
-    let args = a:args
+  let target = get(a:args, 0, '')
 
-    let a:context.source__target = args[0]
-    let targets = a:context.source__target
-  else
-    let args = unite#helper#parse_project_bang(a:args)
-
-    let default = get(args, 0, '')
-
-    if default == ''
-      let default = '.'
-    endif
-
-    if type(get(args, 0, '')) == type('')
-          \ && get(args, 0, '') == ''
-          \ && a:context.input == ''
-      let target = unite#util#substitute_path_separator(
-            \ unite#util#input('Target: ', default, 'file'))
-      if target == ''
-        let a:context.source__target = []
-        let a:context.source__input = ''
-        return
-      endif
-    else
-      let target = default
-    endif
-
-    if target == '%' || target == '#'
-      let target = bufname(target)
-    elseif target ==# '$buffers'
-      let target = join(map(filter(range(1, bufnr('$')),
-            \ 'buflisted(v:val) && filereadable(bufname(v:val))'),
-            \ 'bufname(v:val)'))
-    elseif target == '**'
-      " Optimized.
-      let target = '.'
-    endif
-
-    let a:context.source__target = [target]
-
-    let targets = map(filter(split(target), 'v:val !~ "^-"'),
-          \ 'substitute(v:val, "\\*\\+$", "", "")')
+  if target ==# ''
+    let target = isdirectory(a:context.path) ?
+      \ a:context.path :
+      \ unite#util#input('Target: ', '.', 'file')
   endif
 
-  let a:context.source__extra_opts = get(args, 1, '')
+  if target ==# ''
+    let a:context.source__targets = []
+    let a:context.source__input = ''
+    return
+  endif
 
-  let a:context.source__input = get(args, 2, a:context.input)
+  let targets = split(target, "\n")
+  if target ==# '%' || target ==# '#'
+    let targets = [bufname(target)]
+  elseif target ==# '$buffers'
+    let targets = map(filter(range(1, bufnr('$')),
+          \ 'buflisted(v:val) && filereadable(bufname(v:val))'),
+          \ 'bufname(v:val)')
+  elseif target ==# '**'
+    " Optimized.
+    let targets = ['.']
+  endif
+
+  let targets = map(targets, 'substitute(v:val, "\\*\\+$", "", "")')
+  let a:context.source__targets =
+        \ map(targets, 'unite#helper#parse_source_path(v:val)')
+
+  let a:context.source__extra_opts = get(a:args, 1, '')
+
+  let a:context.source__input = get(a:args, 2, a:context.input)
   if a:context.source__input == '' || a:context.unite__is_restart
     let a:context.source__input = unite#util#input('Pattern: ',
           \ a:context.source__input)
@@ -120,14 +103,10 @@ function! s:source.hooks.on_init(args, context) "{{{
   call unite#print_source_message('Pattern: '
         \ . a:context.source__input, s:source.name)
 
-  if target != ''
-    call unite#print_source_message('Target: ' . target, s:source.name)
-  endif
-
   let a:context.source__directory =
-        \ (len(targets) == 1) ?
+        \ (len(a:context.source__targets) == 1) ?
         \ unite#util#substitute_path_separator(
-        \  unite#util#expand(targets[0])) : ''
+        \  unite#util#expand(a:context.source__targets[0])) : ''
 endfunction"}}}
 function! s:source.hooks.on_syntax(args, context) "{{{
   if !unite#util#has_vimproc()
@@ -162,9 +141,6 @@ function! s:source.hooks.on_post_filter(args, context) "{{{
     let candidate.kind = ['file', 'jump_list']
     let candidate.action__col_pattern = a:context.source__input
     let candidate.is_multiline = 1
-    let candidate.action__path =
-          \ unite#util#substitute_path_separator(
-          \   fnamemodify(candidate.source__info[0], ':p'))
     let candidate.action__line = candidate.source__info[1]
     let candidate.action__text = candidate.source__info[2]
   endfor
@@ -192,7 +168,7 @@ function! s:source.gather_candidates(args, context) "{{{
     return []
   endif
 
-  if empty(a:context.source__target)
+  if empty(a:context.source__targets)
         \ || a:context.source__input == ''
     call unite#print_source_message('Canceled.', s:source.name)
     let a:context.is_async = 0
@@ -209,11 +185,10 @@ function! s:source.gather_candidates(args, context) "{{{
     \   recursive_opt,
     \   a:context.source__extra_opts,
     \   string(a:context.source__input),
-    \   join(map(copy(a:context.source__target),
-    \           "unite#util#escape_shell(substitute(v:val, '/$', '', ''))"))
+    \   unite#helper#join_targets(a:context.source__targets)
     \)
 
-  call unite#print_source_message('Command-line: ' . cmdline, s:source.name)
+  call unite#add_source_message('Command-line: ' . cmdline, s:source.name)
 
   let save_term = $TERM
   try
@@ -221,7 +196,8 @@ function! s:source.gather_candidates(args, context) "{{{
     let $TERM = 'dumb'
 
     let a:context.source__proc = vimproc#plineopen3(
-          \ vimproc#util#iconv(cmdline, &encoding, 'char'), 1)
+          \ vimproc#util#iconv(cmdline, &encoding,
+          \ g:unite_source_grep_encoding), 1)
   finally
     let $TERM = save_term
   endtry
@@ -241,7 +217,7 @@ function! s:source.async_gather_candidates(args, context) "{{{
   let stderr = a:context.source__proc.stderr
   if !stderr.eof
     " Print error.
-    let errors = filter(unite#util#read_lines(stderr, 100),
+    let errors = filter(unite#util#read_lines(stderr, 200),
           \ "v:val !~ '^\\s*$'")
     if !empty(errors)
       call unite#print_source_error(errors, s:source.name)
@@ -271,7 +247,7 @@ function! s:source.async_gather_candidates(args, context) "{{{
   let _ = []
   for candidate in candidates
     if len(candidate[1]) <= 1 || candidate[1][1] !~ '^\d\+$'
-      let path = a:context.source__target[0]
+      let path = a:context.source__targets[0]
       if len(candidate[1]) <= 1
         let line = candidate[0][:1][0]
         let text = candidate[1][0]
@@ -285,10 +261,13 @@ function! s:source.async_gather_candidates(args, context) "{{{
       let text = join(candidate[1][2:], ':')
     endif
 
-    let _gitpath = substitute(system('git rev-parse --show-toplevel'), '\n', '','')
-    let _showpath = substitute(path, _gitpath, '','')
+    "let _gitpath = substitute(system('git rev-parse --show-toplevel'), '\n', '','')
+    "let _showpath = substitute(path, _gitpath, '','')
     call add(_, {
-          \ 'word' : printf('%s: %s: %s', _showpath, line, text),
+          \ 'word' : printf('%s: %s: %s', path, line, text),
+          \ 'action__path' :
+          \ unite#util#substitute_path_separator(
+          \   fnamemodify(path, ':p')),
           \ 'source__info' : [path, line, text]
           \ })
   endfor

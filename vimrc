@@ -374,8 +374,7 @@ let g:unite_source_history_yank_enable = 1
 " 'matcher_project_ignore_files' not work
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
-call unite#custom#source('grep', 'matchers', 'matcher_fuzzy')
-call unite#custom#source('tag', 'matchers', 'matcher_fuzzy')
+call unite#custom#source('tag,file_rec,file_mru,file,file_rec/git,grep', 'matchers', 'matcher_fuzzy')
 
 " no put grep,file_rec/git,file_rec/async which are used in vim_yotta*.sh, got bug:will ignore line which has
 " 'login'
@@ -400,10 +399,15 @@ call unite#custom_source('file_rec,file_mru,file,file_rec/git,grep',
       \ '.*\.tar',
       \ '.*\.jar',
       \ '.*\.tar\.gz',
-      \ '^/Users/wrb/goworkspace/src/yottabyte.cn/rizhiyi_manager/Godeps/_workspace/src/',
-      \ '^/Users/wrb/yottabyte/src/rizhiyi_manager_agent/rizhiyi/java/',
-      \ '^/Users/wrb/yottabyte/src/rizhiyi_manager_agent/rizhiyi/license/',
-      \ '^/Users/wrb/yottabyte/src/rizhiyi_manager_agent/rizhiyi_manager_agent/python',
+      \ '^/src/rizhiyi_manager/Godeps/_workspace/src/',
+      \ '^/src/rizhiyi_manager_agent/rizhiyi/java/',
+      \ '^/src/rizhiyi_manager_agent/rizhiyi/license/',
+      \ '^/src/rizhiyi_manager_agent/rizhiyi_manager_agent/python',
+      \ '^/src/YottaMonitor/influxdb',
+      \ '^/src/YottaMonitor/pymysql',
+      \ '^/src/YottaMonitor/requests',
+      \ '^/src/YottaMonitor/web',
+      \ '^/src/YottaMonitor/static/assets',
       \ ], '\|'))
 
 if executable('ag')
@@ -686,5 +690,7 @@ let g:DirDiffIgnoreCase = 0
 " 1. '&' can use to repeat the last :%s
 " 2. <C-a> on a number make it increase
 " 3. zA, za 两个命令flod和unflod当前
-"
+" 4. 当expandtab打开，我们默认打开tab都转换为空格的情况下输入tab:
+" 在insert模式下<C-v><TAB>
+" 或者:set expandtab! 输入后:set expandtab
 "syntax off

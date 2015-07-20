@@ -35,10 +35,14 @@ call unite#util#set_default(
       \ 'g:unite_source_file_rec_max_cache_files')
 call unite#util#set_default('g:unite_source_rec_unit',
       \ unite#util#is_windows() ? 1000 : 2000)
+" -L follows symbolic links to have the same behaviour as file_rec
 call unite#util#set_default(
       \ 'g:unite_source_rec_async_command', (
-      \  !unite#util#is_windows() && executable('find') ? 'find' : ''),
+      \  !unite#util#is_windows() && executable('find') ? 'find -L' : ''),
       \ 'g:unite_source_file_rec_async_command')
+call unite#util#set_default(
+      \ 'g:unite_source_rec_find_args',
+      \ ['-path', '*/.git/*', '-prune', '-o', '-type', 'l', '-print'])
 call unite#util#set_default(
       \ 'g:unite_source_rec_git_command', 'git')
 "}}}
@@ -65,7 +69,8 @@ let s:source_file_rec = {
       \ }
 
 function! s:source_file_rec.gather_candidates(args, context) "{{{
-  let a:context.source__directory = s:get_path(a:args, a:context)
+  let a:context.source__directory =
+        \ get(s:get_paths(a:args, a:context), 0, '')
 
   let directory = a:context.source__directory
   if directory == ''
@@ -149,7 +154,7 @@ function! s:source_file_rec.vimfiler_check_filetype(args, context) "{{{
   return [type, lines, dict]
 endfunction"}}}
 function! s:source_file_rec.vimfiler_gather_candidates(args, context) "{{{
-  let path = s:get_path(a:args, a:context)
+  let path = get(s:get_paths(a:args, a:context), 0, '')
 
   if !isdirectory(path)
     let a:context.source__directory = path
@@ -244,7 +249,8 @@ let s:source_file_async.description =
       \ 'asynchronous candidates from directory by recursive'
 
 function! s:source_file_async.gather_candidates(args, context) "{{{
-  let a:context.source__directory = s:get_path(a:args, a:context)
+  let paths = s:get_paths(a:args, a:context)
+  let a:context.source__directory = join(paths, "\n")
 
   if !unite#util#has_vimproc()
     call unite#print_source_message(
@@ -273,10 +279,10 @@ function! s:source_file_async.gather_candidates(args, context) "{{{
   let command = g:unite_source_rec_async_command
   if a:context.source__is_directory
     " Use find command.
-    let command = 'find'
+    let command = 'find -L'
   endif
 
-  let args = split(command)
+  let args = vimproc#parser#split_args(command)
   if empty(args) || !executable(args[0])
     if empty(args)
       call unite#print_source_message(
@@ -284,28 +290,26 @@ function! s:source_file_async.gather_candidates(args, context) "{{{
             \  . 'g:unite_source_rec_async_command variable.', self.name)
     else
       call unite#print_source_message('async command : "'.
-            \ command.'" is not executable.', self.name)
+            \ args[0].'" is not executable.', self.name)
     endif
     let a:context.is_async = 0
     return []
   endif
 
   " Note: If find command and args used, uses whole command line.
+  let commands = args + paths
   if args[0] ==# 'find'
-    let command .= ' ' . unite#util#escape_shell(directory)
-
-    if g:unite_source_rec_async_command ==# 'find'
-      " Default option.
-      let command .= ' -path ''*/\.git/*'' -prune -o -type l -print -o -type '
-            \ . (a:context.source__is_directory ? 'd' : 'f') . ' -print'
-    endif
-  else
-    let command .= ' ' . unite#util#escape_shell(directory)
+    " Default option.
+    let commands += g:unite_source_rec_find_args
+    let commands +=
+          \ ['-o', '-type',
+          \ (a:context.source__is_directory ? 'd' : 'f'), '-print']
   endif
 
   " Note: "pt" needs pty.
-  let a:context.source__proc = vimproc#pgroup_open(command,
-        \ fnamemodify(args[0], ':t') ==# 'pt')
+  let a:context.source__proc =
+        \ (fnamemodify(args[0], ':t') ==# 'pt') ?
+        \ vimproc#popen3(commands, 1) : vimproc#popen3(commands)
 
   " Close handles.
   call a:context.source__proc.stdin.close()
@@ -317,7 +321,7 @@ function! s:source_file_async.async_gather_candidates(args, context) "{{{
   let stderr = a:context.source__proc.stderr
   if !stderr.eof
     " Print error.
-    let errors = filter(unite#util#read_lines(stderr, 100),
+    let errors = filter(unite#util#read_lines(stderr, 200),
           \ "v:val !~ '^\\s*$'")
     if !empty(errors)
       call unite#print_source_error(errors, self.name)
@@ -370,6 +374,163 @@ function! s:source_file_async.hooks.on_close(args, context) "{{{
   endif
 endfunction "}}}
 
+" Source neovim.
+let s:source_file_neovim = deepcopy(s:source_file_rec)
+let s:source_file_neovim.name = 'file_rec/neovim'
+let s:source_file_neovim.description =
+      \ 'neovim asynchronous candidates from directory by recursive'
+
+let s:job_info = {}
+function! s:job_handler(job_id, data, event) abort "{{{
+  if !has_key(s:job_info, a:job_id)
+    let s:job_info[a:job_id] = {
+          \ 'candidates' : [],
+          \ 'errors' : [],
+          \ 'eof' : 0,
+          \ }
+  endif
+
+  let job = s:job_info[a:job_id]
+
+  if a:event ==# 'exit'
+    let job.eof = 1
+    return
+  endif
+
+  let lines = a:data
+
+  let candidates = (a:event ==# 'stdout') ? job.candidates : job.errors
+  if !empty(lines) && lines[0] != "\n" && !empty(job.candidates)
+    " Join to the previous line
+    let candidates[-1] .= lines[0]
+    call remove(lines, 0)
+  endif
+
+  call map(filter(lines, 'v:val != ""'),
+          \ "unite#util#iconv(v:val, 'char', &encoding)")
+
+  if unite#util#is_windows()
+    call map(lines,
+          \ 'unite#util#substitute_path_separator(v:val)')
+  endif
+
+  let candidates += lines
+endfunction"}}}
+
+function! s:source_file_neovim.gather_candidates(args, context) "{{{
+  let paths = s:get_paths(a:args, a:context)
+  let a:context.source__directory = join(paths, "\n")
+
+  if !has('nvim')
+    call unite#print_source_message(
+          \ 'Your vim is not neovim.', self.name)
+    let a:context.is_async = 0
+    return []
+  endif
+
+  let directory = a:context.source__directory
+
+  call unite#print_source_message(
+        \ 'directory: ' . directory, self.name)
+
+  call s:init_continuation(a:context, directory)
+
+  let continuation = a:context.source__continuation
+
+  if empty(continuation.rest) || continuation.end
+    " Disable async.
+    let a:context.is_async = 0
+    let continuation.end = 1
+
+    return deepcopy(continuation.files)
+  endif
+
+  let command = g:unite_source_rec_async_command
+  if a:context.source__is_directory
+    " Use find command.
+    let command = 'find -L'
+  endif
+
+  let args = split(command)
+  if empty(args) || !executable(args[0])
+    if empty(args)
+      call unite#print_source_message(
+            \ 'You must install file list command and specify '
+            \  . 'g:unite_source_rec_async_command variable.', self.name)
+    else
+      call unite#print_source_message('async command : "'.
+            \ args[0].'" is not executable.', self.name)
+    endif
+    let a:context.is_async = 0
+    return []
+  endif
+
+  " Note: If find command and args used, uses whole command line.
+  let commands = args + paths
+  if args[0] ==# 'find'
+    " Default option.
+    let commands += g:unite_source_rec_find_args
+    let commands +=
+          \ ['-o', '-type',
+          \ (a:context.source__is_directory ? 'd' : 'f'), '-print']
+  endif
+
+  " Note: "pt" needs pty.
+  let a:context.source__job = jobstart(commands, {
+        \ 'on_stdout' : function('s:job_handler'),
+        \ 'on_stderr' : function('s:job_handler'),
+        \ 'on_exit' : function('s:job_handler'),
+        \ 'pty' : fnamemodify(args[0], ':t') ==# 'pt'
+        \ })
+
+  return []
+endfunction"}}}
+
+function! s:source_file_neovim.async_gather_candidates(args, context) "{{{
+  if !has_key(s:job_info, a:context.source__job)
+    return []
+  endif
+
+  let job = s:job_info[a:context.source__job]
+
+  if !empty(job.errors)
+    " Print error.
+    call unite#print_source_error(job.errors[: -2], self.name)
+    let job.errors = job.errors[-1:]
+  endif
+
+  let continuation = a:context.source__continuation
+  let candidates = unite#helper#paths2candidates(job.candidates[: -2])
+  let job.candidates = job.candidates[-1:]
+
+  if job.eof
+    " Disable async.
+    let a:context.is_async = 0
+    let continuation.end = 1
+    call s:source_file_neovim.hooks.on_close(a:args, a:context)
+  endif
+
+  let continuation.files += candidates
+  if job.eof
+    call s:write_cache(a:context,
+          \ a:context.source__directory, continuation.files)
+  endif
+
+  return deepcopy(candidates)
+endfunction"}}}
+
+function! s:source_file_neovim.hooks.on_init(args, context) "{{{
+  let a:context.source__is_directory = 0
+  call s:on_init(a:args, a:context)
+endfunction"}}}
+function! s:source_file_neovim.hooks.on_close(args, context) "{{{
+  if has_key(a:context, 'source__job')
+        \ && has_key(s:job_info, a:context.source__job)
+    silent! call jobstop(a:context.source__job)
+    call remove(s:job_info, a:context.source__job)
+  endif
+endfunction "}}}
+
 " Source git.
 let s:source_file_git = deepcopy(s:source_file_async)
 let s:source_file_git.name = 'file_rec/git'
@@ -384,9 +545,9 @@ function! s:source_file_git.gather_candidates(args, context) "{{{
   endif
 
   let _gitpath = substitute(system('git rev-parse --show-toplevel'), '\n', '','')
-  let a:context.source__directory = _gitpath
-  " let a:context.source__directory = s:get_path(a:args, a:context)
-        "\ unite#util#substitute_path_separator(getcwd())
+  let a:context.source__directory = _gitpath . "/"
+  "let a:context.source__directory = s:get_path(a:args, a:context)
+      "\ unite#util#substitute_path_separator(getcwd())
   let directory = a:context.source__directory
   if finddir('.git', ';') == ''
     " Not in git directory.
@@ -395,6 +556,11 @@ function! s:source_file_git.gather_candidates(args, context) "{{{
     let a:context.is_async = 0
     return []
   endif
+
+  "let a:context.source__directory =
+        "\ unite#util#substitute_path_separator(getcwd()) . '/'
+  "let directory = unite#util#substitute_path_separator(
+        ""\   fnamemodify(finddir('.git', ';'), ':p:h:h'))
 
   call unite#print_source_message(
         \ 'directory: ' . directory, self.name)
@@ -413,15 +579,15 @@ function! s:source_file_git.gather_candidates(args, context) "{{{
 
   let command = g:unite_source_rec_git_command
         \ . ' ls-files ' . join(a:args)
-  let args = split(command) + a:args
+  let args = vimproc#parser#split_args(command) + a:args
   if empty(args) || !executable(args[0])
     call unite#print_source_message('git command : "'.
-          \ command.'" is not executable.', self.name)
+          \ args[0].'" is not executable.', self.name)
     let a:context.is_async = 0
     return []
   endif
 
-  let a:context.source__proc = vimproc#pgroup_open(command)
+  let a:context.source__proc = vimproc#popen3(command)
 
   " Close handles.
   call a:context.source__proc.stdin.close()
@@ -431,9 +597,12 @@ endfunction"}}}
 function! s:source_file_git.async_gather_candidates(args, context) "{{{
   return map(s:source_file_async.async_gather_candidates(
         \ a:args, a:context), "{
-        \   'word' : a:context.source__directory . '/' . v:val.word,
-        \   'action__path' : a:context.source__directory . '/' . v:val.word,
+        \   'word' : a:context.source__directory . v:val.word,
+        \   'action__path' : a:context.source__directory . v:val.word,
         \}")
+endfunction"}}}
+function! s:source_file_git.complete(args, context, arglead, cmdline, cursorpos) "{{{
+  return []
 endfunction"}}}
 
 " Source directory.
@@ -447,6 +616,12 @@ function! s:source_directory_rec.hooks.on_init(args, context) "{{{
   let a:context.source__is_directory = 1
   call s:on_init(a:args, a:context)
 endfunction"}}}
+function! s:source_directory_rec.hooks.on_post_filter(args, context) "{{{
+  for candidate in filter(copy(a:context.candidates),
+        \ "v:val.word[-1:] != '/'")
+    let candidate.abbr = candidate.word . '/'
+  endfor
+endfunction"}}}
 
 " Source directory/async.
 let s:source_directory_async = deepcopy(s:source_file_async)
@@ -459,24 +634,35 @@ function! s:source_directory_async.hooks.on_init(args, context) "{{{
   let a:context.source__is_directory = 1
   call s:on_init(a:args, a:context)
 endfunction"}}}
+function! s:source_directory_async.hooks.on_post_filter(args, context) "{{{
+  for candidate in filter(copy(a:context.candidates),
+        \ "v:val.word[-1:] != '/'")
+    let candidate.abbr = candidate.word . '/'
+  endfor
+endfunction"}}}
 
 " Misc.
-function! s:get_path(args, context) "{{{
-  let args = unite#helper#parse_project_bang(a:args)
+function! s:get_paths(args, context) "{{{
+  let args = unite#helper#parse_source_args(a:args)
   let directory = get(args, 0, '')
   if directory == ''
     let directory = isdirectory(a:context.path) ?
           \ a:context.path : getcwd()
   endif
 
-  let directory = unite#util#substitute_path_separator(
-        \ fnamemodify(unite#util#expand(directory), ':p'))
+  let paths = []
+  for path in split(directory, "\n")
+    let path = unite#util#substitute_path_separator(
+          \ fnamemodify(unite#util#expand(path), ':p'))
 
-  if directory != '/' && directory =~ '/$'
-    let directory = directory[: -2]
-  endif
+    if path != '/' && path =~ '/$'
+      let path = path[: -2]
+    endif
 
-  return directory
+    call add(paths, path)
+  endfor
+
+  return paths
 endfunction"}}}
 function! s:get_files(context, files, level, max_unit, ignore_dir) "{{{
   let continuation_files = []
@@ -619,6 +805,7 @@ function! s:write_cache(context, directory, files) "{{{
         \ && !unite#util#is_sudo()
         \ && len(a:files) >
         \ g:unite_source_rec_min_cache_files
+        \ && stridx(a:directory, "\n") < 0
     call s:Cache.writefile(cache_dir, a:directory,
           \ map(copy(a:files), 'v:val.action__path'))
   elseif s:Cache.filereadable(cache_dir, a:directory)
@@ -656,6 +843,7 @@ function! unite#sources#rec#define() "{{{
   let sources = [ s:source_file_rec, s:source_directory_rec ]
   let sources += [ s:source_file_async, s:source_directory_async]
   let sources += [ s:source_file_git ]
+  let sources += [ s:source_file_neovim ]
   return sources
 endfunction"}}}
 

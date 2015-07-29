@@ -7,7 +7,7 @@ if [ $# -eq 1 ]; then
     touch ~/.vim_sessions/rizhiyi_manager
   fi
   if [ $1 = rebuild ]; then
-    go install yottabyte.cn/rizhiyi_manager/server/...
+    go install yottabyte.cn/rizhiyi_manager/server
   fi
   if [ $1 = rebuildall ]; then
     # 当保存文件自动synstatic太慢时候使用

@@ -124,6 +124,7 @@ alias vdir='ls'
 alias ll='ls -lta'                              # long list
 alias la='ls -A'                              # all but . and ..
 alias l='ls -CF'                              #
+alias md5sum='md5'
 #add by wuranbo
 alias cd=cd_func
 alias qgit='/Users/wrb/bin/qgit.app/Contents/MacOS/qgit'

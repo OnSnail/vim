@@ -376,29 +376,33 @@ call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 call unite#custom#source('tag,file_rec,file_mru,file,file_rec/git,grep', 'matchers', 'matcher_fuzzy')
 
-" no put grep,file_rec/git,file_rec/async which are used in vim_yotta*.sh, got bug:will ignore line which has
-" 'login'
+" 1. 注意匹配尽量写好，之前出过'login'查不到因为过滤 *.log
+" 2. 出现过rizhiyi_manager/.gitignore
+" 里写了etcd导致含有etcd这个字串的都被ignore，应指定到具体的文件etcd/etcd就好了。
+" TODO: 当git时候因是通过git
+" ls-files应可改unite插件使得不从.gitignore中找parttern加入ignore_pattern
+" 3. 这些应该可以通过.gitignore过滤的，不放在这里。但就当没有git的查找文件累些
+     "\ '\.git/',
+     "\ 'bootstrap/',
+     "\ '\.sass-cache',
+     "\ 'node_modules/',
+     "\ 'app/storage',
+     "\ '\.cache/',
+     "\ '\.atom/',
+     "\ '\.codeintel/',
+     "\ '\.gitignore',
+     "\ '.*\.swp',
+     "\ 'tags',
+     "\ '\.arcconfig',
+     "\ '\.ropeproject/',
+     "\ '/.*\.log',
+     "\ '.*\.bak',
+     "\ '.*\.gz',
+     "\ '.*\.tar',
+     "\ '.*\.jar',
+     "\ '.*\.tar\.gz',
 call unite#custom_source('file_rec,file_mru,file,file_rec/git,grep',
       \ 'ignore_pattern', join([
-      \ '\.git/',
-      \ 'bootstrap/',
-      \ '\.sass-cache',
-      \ 'node_modules/',
-      \ 'app/storage',
-      \ '\.cache/',
-      \ '\.atom/',
-      \ '\.codeintel/',
-      \ '\.gitignore',
-      \ '.*\.swp',
-      \ 'tags',
-      \ '\.arcconfig',
-      \ '\.ropeproject/',
-      \ '/.*\.log',
-      \ '.*\.bak',
-      \ '.*\.gz',
-      \ '.*\.tar',
-      \ '.*\.jar',
-      \ '.*\.tar\.gz',
       \ '^/src/rizhiyi_manager/Godeps/_workspace/src/',
       \ '^/src/rizhiyi_manager_agent/rizhiyi/java/',
       \ '^/src/rizhiyi_manager_agent/rizhiyi/license/',

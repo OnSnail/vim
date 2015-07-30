@@ -6,9 +6,6 @@ if [ $# -eq 1 ]; then
     touch ~/.vim_viminfos/rizhiyi_manager
     touch ~/.vim_sessions/rizhiyi_manager
   fi
-  if [ $1 = rebuild ]; then
-    go install yottabyte.cn/rizhiyi_manager/server
-  fi
   if [ $1 = rebuildall ]; then
     # 当保存文件自动synstatic太慢时候使用
     go install -a yottabyte.cn/rizhiyi_manager/server
@@ -22,7 +19,7 @@ fi
 cd /src/rizhiyi_manager
 bash ~/github/wuranbo/vim/scripts/ctags_rizhiyi_manager.sh
 # 需要看html的snippet怎么导入htmlgo
-vim --cmd "set path+=~/rizhiyi_manager" \
+vim --cmd "set path+=/src/rizhiyi_manager" \
   --cmd "autocmd BufNewFile,BufRead *.html set filetype=htmlgo.html" \
   --cmd "autocmd BufNewFile,BufRead *.sample set filetype=dosini" \
   -c "nnoremap <silent> <F5>  :<C-u>Unite -smartcase -buffer-name=files -start-insert file_rec/git:/src/rizhiyi_manager:--full-name<CR>" \
@@ -36,4 +33,8 @@ vim --cmd "set path+=~/rizhiyi_manager" \
   --cmd "autocmd VimEnter * :rviminfo ~/.vim_viminfos/rizhiyi_manager" \
   --cmd "autocmd FileType go set tags=~/rizhiyi_manager/tags" \
   --cmd "autocmd FileType javascript set tags=~/rizhiyi_manager/js_tags" \
+  --cmd 'command! Go silent exec "!go install yottabyte.cn/rizhiyi_manager/server > /dev/null 2>&1 &" | execute ":redraw!"' \
   -S "~/.vim_sessions/rizhiyi_manager"
+# NOTE:
+# --cmd 'command! Go silent exec "!go install yottabyte.cn/rizhiyi_manager/server > /dev/null 2>&1 &" | execute ":redraw!"' \
+# 是为了install一次，go install 不加-a不会全重编，只编变动部分。而synstatic插件会利用install的，所以如没有这样就跨模块的synx错误检查不出来

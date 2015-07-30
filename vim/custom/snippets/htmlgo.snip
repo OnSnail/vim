@@ -1,8 +1,9 @@
 # Includes html.snippets
 
-snippet     locales
+snippet     i18n
+alias       t
 abbr        tr .Lang "some%d" arg
-  {{ i18n .Lang "${1:word}" ${2} }}
+  {{ tr .Lang "${1:word}" ${2} }}
 
 snippet     xsrf
 abbr        {{ .xsrf_html }}{{ .once_html }}
@@ -16,7 +17,8 @@ snippet     ifelse
 abbr        {{if .U }} {{else}} {{end}}
   {{ if ${1:cond} }} ${2:cont} {{else}} ${3:elsecont} {{end}}${0}
 
-snippet     load
+snippet     value
+alias       v
 abbr        {{ .U }}
   {{ ${1:cond} }}${0}
 

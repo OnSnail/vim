@@ -672,7 +672,7 @@ au FileType go nmap <Leader>gclr <Plug>(go-callers)
 au FileType go nmap <Leader>gcle <Plug>(go-callees)
 au FileType go nmap <Leader>gcls <Plug>(go-callstack)
 au FileType go nmap <Leader>gclg <Plug>(go-callgraph)
-let g:go_orcale_scope = "yottabyte.cn/rizhiyi_manager/server"
+"let g:go_orcale_scope = "yottabyte.cn/rizhiyi_manager/server"
 let g:go_fmt_command = "goimports"
 let g:go_fmt_autosave = 1
 let g:go_auto_type_info = 1
@@ -691,6 +691,9 @@ let g:DirDiffIgnoreCase = 0
 " 2. <C-a> on a number make it increase
 " 3. zA, za 两个命令flod和unflod当前
 " 4. 当expandtab打开，我们默认打开tab都转换为空格的情况下输入tab:
-" 在insert模式下<C-v><TAB>
-" 或者:set expandtab! 输入后:set expandtab
+"    在insert模式下<C-v><TAB>
+"    或者:set expandtab! 输入后:set expandtab
+" 5. CRLF
+"    :set ff=dos
+"    :set ff=unix
 "syntax off

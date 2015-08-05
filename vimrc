@@ -633,10 +633,21 @@ let g:tagbar_type_go = {
     \ 'ctagsbin'  : 'gotags',
     \ 'ctagsargs' : '-sort -silent'
 \ }
-nmap <Leader>tl :TagbarToggle<CR>
+function _TagbarToggleLeft()
+  let g:tagbar_left = 1
+  execute "TagbarToggle"
+endfunction
+nmap <Leader>tl :call _TagbarToggleLeft()<CR>
+
+function _TagbarToggleRight()
+  let g:tagbar_left = 0
+  execute "TagbarToggle"
+endfunction
+nmap <Leader>trl :call _TagbarToggleRight()<CR>
 "=======end tarbar=======
 "
 "=======syntastic=======
+"tips: 用:x退出vim可以不触发syntastic
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 0
@@ -680,7 +691,7 @@ au FileType go nmap <Leader>gclg <Plug>(go-callgraph)
 let g:go_fmt_command = "goimports"
 let g:go_fmt_autosave = 1
 let g:go_auto_type_info = 1
-let g:go_fmt_fail_silently = 1 " for synstatic
+let g:go_fmt_fail_silently = 1 " for syntastic
 "======end vim-go======
 "
 "======http://www.vim.org/scripts/script.php?script_id=102=======

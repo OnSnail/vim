@@ -97,6 +97,7 @@ abbr if err != nil {return err}
 
 snippet begindefer
 abbr if err := o.Begin(); err != nil { return err}
+alias defer-begin
 	if err = o.Begin(); err != nil {
 		return ${1}log.TransactionError()
 	}

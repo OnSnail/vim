@@ -6,13 +6,8 @@ if [ $# -eq 1 ]; then
     touch ~/.vim_viminfos/rizhiyi_manager
     touch ~/.vim_sessions/rizhiyi_manager
   fi
-  if [ $1 = rebuildall ]; then
-    # 当保存文件自动synstatic太慢时候使用
+  if [ $1 = rebuild ]; then
     go install -a yottabyte.cn/rizhiyi_manager/server
-    rm ~/.vim_sessions/rizhiyi_manager
-    rm ~/.vim_viminfos/rizhiyi_manager
-    touch ~/.vim_viminfos/rizhiyi_manager
-    touch ~/.vim_sessions/rizhiyi_manager
   fi
 fi
 # <buffer> in map is import!!!make a key bind only work for the current buffer filetype

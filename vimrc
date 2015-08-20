@@ -403,6 +403,7 @@ call unite#custom#source('tag,file_rec,file_mru,file,file_rec/git,grep', 'matche
      "\ '.*\.tar\.gz',
 call unite#custom_source('file_rec,file_mru,file,file_rec/git,grep',
       \ 'ignore_pattern', join([
+      \ '^/src/confd/Godeps/_workspace/src/',
       \ '^/src/rizhiyi_manager/Godeps/_workspace/src/',
       \ '^/src/rizhiyi_manager_agent/rizhiyi/java/',
       \ '^/src/rizhiyi_manager_agent/rizhiyi/license/',

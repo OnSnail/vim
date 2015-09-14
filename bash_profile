@@ -156,10 +156,14 @@ alias 91='ssh root@192.168.1.91'
 alias 92='ssh root@192.168.1.92'
 alias 85='ssh root@192.168.1.85'
 alias 87='ssh root@192.168.1.87'
+alias 81='ssh root@192.168.1.81'
+alias 34='ssh root@192.168.1.34'
+alias 33='ssh root@192.168.1.33'
 alias maichuang92='ssh -p36899 rd@211.157.169.92'
 alias skjkj='ssh root@182.92.1.108'
 alias ctags='ctags --links=no'
 alias jshint='jshint --verbose'
+alias gs='git status'
 #
 # Qu Jing iTerm & Terminal Setup Script
 # version 0.4

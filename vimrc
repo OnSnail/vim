@@ -178,6 +178,7 @@ augroup filetype
   autocmd! BufRead,BufNewFile *.pump set filetype=pump
   autocmd! BufRead,BufNewFile BUILD set filetype=blade
   autocmd! BufRead,BufNewFile *.avsc set filetype=json
+  autocmd! BufRead,BufNewFile *.conf set filetype=dosini
 augroup end
 
 " When editing a file, always jump to the last cursor position
@@ -368,6 +369,38 @@ augroup EditVim
 augroup END
 
 "=======surround.vim====for eruby====
+"* is the cursor position
+"
+  "Old text                  Command     New text ~
+  ""Hello *world!"           ds"         Hello world!
+  "[123+4*56]/2              cs])        (123+456)/2
+  ""Look ma, I'm *HTML!"     cs"<q>      <q>Look ma, I'm HTML!</q>
+  "if *x>3 {                 ysW(        if ( x>3 ) {
+  "my $str = *whee!;         vllllS'     my $str = 'whee!';
+  "
+  "DS
+  "
+  "Old text                  Command     New text ~
+  ""Hello *world!"           ds"         Hello world!
+  "(123+4*56)/2              ds)         123+456/2
+  "<div>Yo!*</div>           dst         Yo!
+  "
+  "CS
+  "
+  "Old text                  Command     New text ~
+  ""Hello *world!"           cs"'        'Hello world!'
+  ""Hello *world!"           cs"<q>      <q>Hello world!</q>
+  "(123+4*56)/2              cs)]        [123+456]/2
+  "(123+4*56)/2              cs)[        [ 123+456 ]/2
+  "<div>Yo!*</div>           cst<p>      <p>Yo!</p>
+  "
+  "YS
+  "
+  "Old text                  Command     New text ~
+  "Hello w*orld!             ysiw)       Hello (world)!
+  "Old text                  Command     New text ~
+      "Hello w*orld!         yssB            {Hello world!}
+  "
 
 "=======unite.vim======
 let g:unite_source_history_yank_enable = 1
@@ -712,4 +745,12 @@ let g:DirDiffIgnoreCase = 0
 " 5. CRLF
 "    :set ff=dos
 "    :set ff=unix
+" 6. substitute大写开头单词('->\")(ag '\b[A-Z]{2}[A-Za-z_]*\b' --go)
+"     s/\<./\u&/g
+"
+"     \< matches the start of a word
+"     . matches the first character of a word
+"     \u tells Vim to uppercase the following character in the substitution string
+"     & means substitute whatever was matched on the LHS
+"
 "syntax off

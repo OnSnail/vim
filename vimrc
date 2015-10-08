@@ -446,6 +446,8 @@ call unite#custom_source('file_rec,file_mru,file,file_rec/git,grep',
       \ '^/src/YottaMonitor/requests',
       \ '^/src/YottaMonitor/web',
       \ '^/src/YottaMonitor/static/assets',
+      \ '^/Users/wrb/src/indoordb/indoordb/app/assets/javascripts/3rd',
+      \ '^/Users/wrb/src/indoordb/indoordb/app/assets/stylesheets/3rd',
       \ ], '\|'))
 
 if executable('ag')
